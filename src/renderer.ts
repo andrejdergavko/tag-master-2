@@ -26,6 +26,7 @@
  * ```
  */
 
+//@ts-ignore
 import './index.css';
 import './app';
 
