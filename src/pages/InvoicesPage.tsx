@@ -14,7 +14,9 @@ export default function InvoicesPage() {
       setStatus(`Loaded: ${JSON.stringify(result)}`);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Failed to fetch inbox preview';
+        error instanceof Error
+          ? error.message
+          : 'Failed to fetch inbox preview';
       setError(message);
       setStatus('Failed');
     }
