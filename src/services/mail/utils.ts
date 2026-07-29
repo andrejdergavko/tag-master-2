@@ -1,4 +1,7 @@
-import { MessageStructureObject } from 'imapflow/lib/imap-flow';
+import {
+  FetchMessageObject,
+  MessageStructureObject,
+} from 'imapflow/lib/imap-flow';
 
 export function findAttachments(
   node: MessageStructureObject,
@@ -25,3 +28,16 @@ export function findAttachments(
 
   return attachments;
 }
+
+export const getMessagesAttachments = (messages: FetchMessageObject[]) => {
+  const allAttachments: MessageStructureObject[] = [];
+
+  for (const message of messages) {
+    if (!message.bodyStructure) continue;
+
+    const attachments = findAttachments(message.bodyStructure);
+    allAttachments.push(...attachments);
+  }
+
+  return allAttachments;
+};

@@ -3,7 +3,7 @@ import {
   MessageStructureObject,
 } from 'imapflow/lib/imap-flow';
 import { createImapClient } from './client';
-import { findAttachments } from './utils';
+import { findAttachments, getMessagesAttachments } from './utils';
 
 export type MailInboxPreview = {
   latestMessage: string | null;
@@ -43,14 +43,9 @@ export const fetchNewInvoicesBySupplier = async (supplierEmail: string) => {
       },
     );
 
-    const allAttachments: MessageStructureObject[] = [];
+    const allAttachments = getMessagesAttachments(messages);
 
-    for (const message of messages) {
-      if (!message.bodyStructure) continue;
-
-      const attachments = findAttachments(message.bodyStructure);
-      allAttachments.push(...attachments);
-    }
+    console.log(allAttachments);
 
     return allAttachments;
   } finally {
