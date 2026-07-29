@@ -1,4 +1,8 @@
-export function findAttachments(node: any): any[] {
+import { MessageStructureObject } from 'imapflow/lib/imap-flow';
+
+export function findAttachments(
+  node: MessageStructureObject,
+): MessageStructureObject[] {
   const attachments = [];
   const topType = (node.type || '').split('/')[0];
 

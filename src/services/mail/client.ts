@@ -1,6 +1,6 @@
 import { ImapFlow } from 'imapflow';
 
-export function createImapClient() {
+export function createImapClient(): ImapFlow {
   return new ImapFlow({
     host: process.env.HOST || '',
     port: Number(process.env.PORT) || 993,

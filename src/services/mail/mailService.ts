@@ -1,3 +1,7 @@
+import {
+  MailboxLockObject,
+  MessageStructureObject,
+} from 'imapflow/lib/imap-flow';
 import { createImapClient } from './client';
 import { findAttachments } from './utils';
 
@@ -18,7 +22,8 @@ export const fetchNewInvoicesBySupplier = async (supplierEmail: string) => {
   const lastInvoiceDate = new Date('2026-07-27T14:32:49.000Z');
 
   const client = createImapClient();
-  let lock: { release(): void } | undefined;
+
+  let lock: MailboxLockObject | undefined;
 
   try {
     await client.connect();
@@ -38,11 +43,12 @@ export const fetchNewInvoicesBySupplier = async (supplierEmail: string) => {
       },
     );
 
-    const allAttachments: any[] = [];
+    const allAttachments: MessageStructureObject[] = [];
 
     for (const message of messages) {
-      const attachments = findAttachments(message.bodyStructure);
+      if (!message.bodyStructure) continue;
 
+      const attachments = findAttachments(message.bodyStructure);
       allAttachments.push(...attachments);
     }
 
