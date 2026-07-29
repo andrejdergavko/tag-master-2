@@ -9,5 +9,6 @@ export function createImapClient() {
       user: process.env.EMAIL || '',
       pass: process.env.PASSWORD || '',
     },
+    logger: false,
   });
 }

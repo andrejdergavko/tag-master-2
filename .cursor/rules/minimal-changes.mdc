@@ -1,0 +1,11 @@
+---
+description: Keep changes minimal and only implement what the user asked for
+alwaysApply: true
+---
+
+# Minimal Changes
+
+- Make the smallest possible change.
+- Do not add sorting, refactors, abstractions, or extra behavior unless requested.
+- Prefer direct implementations over generalization.
+- If the request is ambiguous, ask before expanding scope.

@@ -10,8 +10,9 @@ export default function InvoicesPage() {
       setError(null);
       setStatus('Loading...');
 
-      const result = await window.electron.mail.fetchInboxPreview();
-      setStatus(`Loaded: ${JSON.stringify(result)}`);
+      // @ts-ignore
+      const result = await window.electron.mail.fetchNewInvoicesBySupplier();
+      console.log(result);
     } catch (error) {
       const message =
         error instanceof Error

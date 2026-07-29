@@ -9,8 +9,11 @@ export type MailInboxPreview = {
 
 const electronHandler = {
   mail: {
-    fetchInboxPreview(): Promise<MailInboxPreview> {
-      return ipcRenderer.invoke('mail:fetch-inbox-preview');
+    fetchNewInvoicesBySupplier(): Promise<MailInboxPreview> {
+      return ipcRenderer.invoke('mail:fetch-new-invoices-by-supplier');
+    },
+    getSupplierInvoices(): Promise<MailInboxPreview> {
+      return ipcRenderer.invoke('mail:get-supplier-invoices');
     },
   },
 };
