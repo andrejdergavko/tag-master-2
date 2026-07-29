@@ -1,7 +1,9 @@
+import { join, resolve } from 'path';
 import {
   FetchMessageObject,
   MessageStructureObject,
 } from 'imapflow/lib/imap-flow';
+import { ATTACHMENTS_DIR } from './constants';
 
 export function findAttachments(
   node: MessageStructureObject,
@@ -29,15 +31,33 @@ export function findAttachments(
   return attachments;
 }
 
-export const getMessagesAttachments = (messages: FetchMessageObject[]) => {
-  const allAttachments: MessageStructureObject[] = [];
+export const getMessageAttachmentsFlat = (message: FetchMessageObject) =>
+  message.bodyStructure
+    ? findAttachments(message.bodyStructure).flatMap((attachment) =>
+        attachment.part ? [{ part: attachment.part, attachment }] : [],
+      )
+    : [];
 
-  for (const message of messages) {
-    if (!message.bodyStructure) continue;
+export const getAttachmentFilename = (
+  attachment: MessageStructureObject,
+  messageUid: number,
+) => {
+  const filename = sanitizeFilename(
+    attachment.dispositionParameters?.filename || '',
+  );
 
-    const attachments = findAttachments(message.bodyStructure);
-    allAttachments.push(...attachments);
-  }
-
-  return allAttachments;
+  return `${messageUid}-${filename}`;
 };
+
+export const getAttachmentPath = (
+  supplierAttachmentsDir: string,
+  attachment: MessageStructureObject,
+  messageUid: number,
+) =>
+  join(supplierAttachmentsDir, getAttachmentFilename(attachment, messageUid));
+
+export const getSupplierAttachmentsDir = (supplierId: string) =>
+  resolve(process.cwd(), ATTACHMENTS_DIR, supplierId);
+
+const sanitizeFilename = (filename: string) =>
+  filename.replace(/[<>:"/\\|?*]/g, '_');

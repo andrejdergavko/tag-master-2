@@ -14,7 +14,7 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 dotenv.config();
 
 ipcMain.handle('mail:fetch-new-invoices-by-supplier', async () => {
-  return fetchNewInvoicesBySupplier('dergavko@mail.ru');
+  return fetchNewInvoicesBySupplier('autopiter');
 });
 // ipcMain.handle('mail:get-supplier-invoices', async () => {
 //   return getSupplierInvoices('dergavko@mail.ru');
