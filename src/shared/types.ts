@@ -1,4 +1,4 @@
-import { IMask } from '../modules/suppliers/types';
+import { MessageStructureObject } from 'imapflow/lib/imap-flow';
 
 export enum DocumentType {
   TN = 'tn',
@@ -35,3 +35,10 @@ export type ISupplier = {
 export enum SupplierId {
   AUTOPITER = 'autopiter',
 }
+
+export type IMask = {
+  type: DocumentType;
+  description: string;
+  isMatch: (attachment: MessageStructureObject) => boolean;
+  extractData: (buffer: Buffer) => IDocument;
+};
