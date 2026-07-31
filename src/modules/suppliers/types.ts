@@ -1,7 +1,9 @@
 import { MessageStructureObject } from 'imapflow/lib/imap-flow';
-import { IInvoice } from '../../shared/types';
+import { DocumentType, IDocument } from '../../shared/types';
 
 export interface IMask {
+  type: DocumentType;
+  description: string;
   isMatch: (attachment: MessageStructureObject) => boolean;
-  extractData: (attachment: MessageStructureObject) => IInvoice;
+  extractData: (buffer: Buffer) => IDocument;
 }

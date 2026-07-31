@@ -1,9 +1,10 @@
-import { join, resolve } from 'path';
 import {
   FetchMessageObject,
+  ImapFlow,
   MessageStructureObject,
 } from 'imapflow/lib/imap-flow';
-import { ATTACHMENTS_DIR } from './constants';
+import { buffer as streamToBuffer } from 'node:stream/consumers';
+import { WorkSheet, utils } from 'xlsx';
 
 export function findAttachments(
   node: MessageStructureObject,
@@ -34,30 +35,31 @@ export function findAttachments(
 export const getMessageAttachmentsFlat = (message: FetchMessageObject) =>
   message.bodyStructure
     ? findAttachments(message.bodyStructure).flatMap((attachment) =>
-        attachment.part ? [{ part: attachment.part, attachment }] : [],
+        attachment.part ? [attachment] : [],
       )
     : [];
 
-export const getAttachmentFilename = (
-  attachment: MessageStructureObject,
+export const getAttachmentBuffer = async (
+  client: ImapFlow,
   messageUid: number,
+  attachment: MessageStructureObject,
 ) => {
-  const filename = sanitizeFilename(
-    attachment.dispositionParameters?.filename || '',
+  const downloadedAttachment = await client.download(
+    String(messageUid),
+    attachment.part ?? '',
+    { uid: true },
   );
 
-  return `${messageUid}-${filename}`;
+  return downloadedAttachment?.content
+    ? await streamToBuffer(downloadedAttachment.content)
+    : null;
 };
 
-export const getAttachmentPath = (
-  supplierAttachmentsDir: string,
-  attachment: MessageStructureObject,
-  messageUid: number,
-) =>
-  join(supplierAttachmentsDir, getAttachmentFilename(attachment, messageUid));
-
-export const getSupplierAttachmentsDir = (supplierId: string) =>
-  resolve(process.cwd(), ATTACHMENTS_DIR, supplierId);
-
-const sanitizeFilename = (filename: string) =>
-  filename.replace(/[<>:"/\\|?*]/g, '_');
+export const getRowsInJSON = (
+  sheet: WorkSheet,
+): (string | number | null)[][] => {
+  return utils.sheet_to_json(sheet, {
+    header: 1,
+    defval: null,
+  });
+};

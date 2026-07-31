@@ -1,8 +1,11 @@
+import { ISupplier, SupplierId } from '../../../shared/types';
 import masks from './masks';
 
-export default {
-  id: 'autopiter',
+const autopiter: ISupplier = {
+  id: SupplierId.AUTOPITER,
   name: 'Автопитер',
   email: 'dergavko@mail.ru',
   masks,
 };
+
+export default autopiter;

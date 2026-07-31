@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from 'antd';
+import { SupplierId } from '../shared/types';
 
 export default function InvoicesPage() {
   const [error, setError] = useState<string | null>(null);
@@ -11,7 +12,10 @@ export default function InvoicesPage() {
       setStatus('Loading...');
 
       // @ts-ignore
-      const result = await window.electron.mail.fetchNewInvoicesBySupplier();
+      const result = await window.electron.mail.fetchNewInvoicesBySupplier(
+        SupplierId.AUTOPITER,
+      );
+
       console.log(result);
     } catch (error) {
       const message =

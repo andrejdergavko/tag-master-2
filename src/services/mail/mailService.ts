@@ -1,35 +1,12 @@
-import {
-  FetchMessageObject,
-  MailboxLockObject,
-  MessageStructureObject,
-} from 'imapflow/lib/imap-flow';
-import { mkdir, writeFile } from 'fs/promises';
-import { join, resolve } from 'path';
+import { MailboxLockObject } from 'imapflow/lib/imap-flow';
 import { createImapClient } from './client';
-import {
-  findAttachments,
-  getAttachmentFilename,
-  getAttachmentPath as getAttachmentFilePath,
-  getMessageAttachmentsFlat,
-  getSupplierAttachmentsDir,
-} from './utils';
+import { getAttachmentBuffer, getMessageAttachmentsFlat } from './utils';
 import suppliers from '../../modules/suppliers';
-import { ATTACHMENTS_DIR } from './constants';
+import { IDocument } from '../../shared/types';
 
-export type MailInboxPreview = {
-  latestMessage: string | null;
-  subjects: string[];
-};
-
-export type MailMessage = {
-  uid: number;
-  subject: string | null;
-  from: string[];
-  date: string | null;
-  flags: string[];
-};
-
-export const fetchNewInvoicesBySupplier = async (supplierId: string) => {
+export const fetchNewInvoicesBySupplier = async (
+  supplierId: string,
+): Promise<IDocument[]> => {
   const client = createImapClient();
   let lock: MailboxLockObject | undefined;
   await client.connect();
@@ -43,31 +20,12 @@ export const fetchNewInvoicesBySupplier = async (supplierId: string) => {
     const messages = await client.fetchAll(
       {
         from: supplier.email,
-        since: new Date('2026-07-27T14:32:49.000Z'),
+        since: new Date('2026-07-27T14:32:49.000Z'), // TODO: add last fetched date
       },
       { envelope: true, uid: true, bodyStructure: true },
     );
 
-    // const maskMapper: {
-    //   attachment: FetchMessageObject;
-    //   mask: IMask;
-    // }[] = attachments.reduce<{ attachment: FetchMessageObject; mask: IMask }[]>(
-    //   (acc, attachment) => {
-    //     for (const mask of supplier.masks) {
-    //       if (mask.isMatch(attachment)) {
-    //         return [...acc, { attachment, mask }];
-    //       }
-    //     }
-
-    //     return acc;
-    //   },
-    //   [],
-    // );
-
-    // const attachments = getMessagesAttachments(messages);
-
-    const supplierAttachmentsDir = getSupplierAttachmentsDir(supplierId);
-    await mkdir(supplierAttachmentsDir, { recursive: true });
+    const documents: IDocument[] = [];
 
     for (const message of messages) {
       if (!message.bodyStructure) continue;
@@ -76,31 +34,26 @@ export const fetchNewInvoicesBySupplier = async (supplierId: string) => {
 
       if (!messageAttachments.length) continue;
 
-      const downloadedAttachments = await client.downloadMany(
-        String(message.uid),
-        messageAttachments.map(({ part }) => part),
-        { uid: true },
-      );
-
-      await Promise.all(
-        messageAttachments.map(async ({ part, attachment }) => {
-          const downloadedAttachment = downloadedAttachments[part];
-
-          if (!downloadedAttachment?.content) return;
-
-          await writeFile(
-            getAttachmentFilePath(
-              supplierAttachmentsDir,
-              attachment,
+      messageAttachments.forEach(async (attachment) => {
+        for (const mask of supplier.masks) {
+          if (mask.isMatch(attachment)) {
+            const buffer = await getAttachmentBuffer(
+              client,
               message.uid,
-            ),
-            downloadedAttachment.content,
-          );
-        }),
-      );
+              attachment,
+            );
+
+            if (!buffer) continue;
+
+            const data = mask.extractData(buffer);
+            documents.push(data);
+            break;
+          }
+        }
+      }, []);
     }
 
-    return null;
+    return documents;
   } finally {
     lock?.release();
     await client.logout().catch(() => undefined);

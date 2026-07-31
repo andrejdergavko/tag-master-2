@@ -1,20 +1,19 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 import { contextBridge, ipcRenderer } from 'electron';
-
-export type MailInboxPreview = {
-  latestMessage: string | null;
-  subjects: string[];
-};
+import { IDocument, SupplierId } from './shared/types';
 
 const electronHandler = {
   mail: {
-    fetchNewInvoicesBySupplier(): Promise<MailInboxPreview> {
-      return ipcRenderer.invoke('mail:fetch-new-invoices-by-supplier');
+    fetchNewInvoicesBySupplier(supplierId: SupplierId): Promise<IDocument[]> {
+      return ipcRenderer.invoke(
+        'mail:fetch-new-invoices-by-supplier',
+        supplierId,
+      );
     },
-    getSupplierInvoices(): Promise<MailInboxPreview> {
-      return ipcRenderer.invoke('mail:get-supplier-invoices');
-    },
+    // getSupplierInvoices() {
+    //   return ipcRenderer.invoke('mail:get-supplier-invoices');
+    // },
   },
 };
 
