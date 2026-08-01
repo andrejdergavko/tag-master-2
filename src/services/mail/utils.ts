@@ -51,7 +51,9 @@ export const getAttachmentBuffer = async (
   );
 
   return downloadedAttachment?.content
-    ? await streamToBuffer(downloadedAttachment.content)
+    ? await streamToBuffer(
+        downloadedAttachment.content as unknown as NodeJS.ReadableStream,
+      )
     : null;
 };
 

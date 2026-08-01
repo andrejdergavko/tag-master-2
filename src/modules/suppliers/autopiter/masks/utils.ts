@@ -1,5 +1,5 @@
 import { isValid } from 'date-fns/isValid';
-import { ru } from 'date-fns/locale';
+import { ru } from 'date-fns/locale/ru';
 import { parse } from 'date-fns/parse';
 
 export const parseInvoiceDate = (rawDate: unknown): Date | null => {
