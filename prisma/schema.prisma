@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -10,4 +5,33 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+enum DocumentType {
+  tn
+  ttn
+  other
+}
+
+model Supplier {
+  id        String     @id
+  name      String
+  email     String     @unique
+  documents Document[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Document {
+  id              String       @id @default(cuid())
+  type            DocumentType
+  supplierId      String
+  supplier        Supplier     @relation(fields: [supplierId], references: [id])
+  number          String?
+  date            DateTime?
+  totalSumWithVat Decimal
+  items           Json
+  source          String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
