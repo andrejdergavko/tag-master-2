@@ -30,8 +30,20 @@ model Document {
   number          String?
   date            DateTime?
   totalSumWithVat Decimal
-  items           Json
+  items           DocumentItem[]
   source          String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+}
+
+model DocumentItem {
+  id          String   @id @default(cuid())
+  documentId  String
+  document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  sku         String?
+  name        String
+  units       String
+  quantity    Int
+  sumWithVat  Decimal
+  description String
 }

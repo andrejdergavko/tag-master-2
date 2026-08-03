@@ -3,6 +3,7 @@ import { createImapClient } from './client';
 import { getAttachmentBuffer, getMessageAttachmentsFlat } from './utils';
 import suppliers from '../../modules/suppliers';
 import { IDocument } from '../../shared/types';
+import { prisma } from '../db/prisma';
 
 export const fetchNewInvoicesBySupplier = async (
   supplierId: string,
@@ -15,6 +16,19 @@ export const fetchNewInvoicesBySupplier = async (
   if (!supplier) throw new Error(`Supplier ${supplierId} not found`);
 
   try {
+    await prisma.supplier.upsert({
+      where: { id: supplier.id },
+      create: {
+        id: supplier.id,
+        name: supplier.name,
+        email: supplier.email,
+      },
+      update: {
+        name: supplier.name,
+        email: supplier.email,
+      },
+    });
+
     lock = await client.getMailboxLock('INBOX');
 
     const messages = await client.fetchAll(
@@ -34,7 +48,7 @@ export const fetchNewInvoicesBySupplier = async (
 
       if (!messageAttachments.length) continue;
 
-      messageAttachments.forEach(async (attachment) => {
+      for (const attachment of messageAttachments) {
         for (const mask of supplier.masks) {
           if (mask.isMatch(attachment)) {
             const buffer = await getAttachmentBuffer(
@@ -46,17 +60,30 @@ export const fetchNewInvoicesBySupplier = async (
             if (!buffer) continue;
 
             const data = mask.extractData(buffer);
+            await prisma.document.create({
+              data: {
+                type: data.type,
+                supplierId: data.supplierId,
+                number: data.number,
+                date: data.date,
+                totalSumWithVat: data.totalSumWithVat,
+                items: {
+                  create: data.items,
+                },
+                // source: data.source ?? attachment.parameters?.name ?? null,
+              },
+            });
             documents.push(data);
             break;
           }
         }
-      }, []);
+      }
     }
 
     return documents;
   } finally {
     lock?.release();
-    await client.logout().catch(() => undefined);
+    await client.logout().catch((): undefined => undefined);
   }
 };
 

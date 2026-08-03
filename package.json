@@ -41,7 +41,7 @@
     "prisma": "^7.9.1",
     "style-loader": "^3.3.4",
     "ts-loader": "^9.6.2",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
