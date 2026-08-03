@@ -18,6 +18,7 @@ model Supplier {
   name      String
   email     String     @unique
   documents Document[]
+  mails     Mail[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -27,6 +28,8 @@ model Document {
   type            DocumentType
   supplierId      String
   supplier        Supplier     @relation(fields: [supplierId], references: [id])
+  mailId          String?
+  mail            Mail?        @relation(fields: [mailId], references: [id], onDelete: SetNull)
   number          String?
   date            DateTime?
   totalSumWithVat Decimal
@@ -34,6 +37,14 @@ model Document {
   source          String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+}
+
+model Mail {
+  id          String     @id
+  supplierId  String
+  supplier    Supplier   @relation(fields: [supplierId], references: [id])
+  sentAt      DateTime   @db.Timestamptz(3)
+  documents   Document[]
 }
 
 model DocumentItem {

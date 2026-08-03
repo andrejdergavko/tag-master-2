@@ -29,22 +29,44 @@ export const fetchNewInvoicesBySupplier = async (
       },
     });
 
+    const latestMail = await prisma.mail.findFirst({
+      where: {
+        supplier: {
+          is: {
+            id: supplier.id,
+          },
+        },
+      },
+      orderBy: { sentAt: 'desc' },
+      select: { sentAt: true },
+    });
+
+    const sentSince =
+      latestMail?.sentAt ?? new Date('2026-07-20T22:43:49.000Z');
+
     lock = await client.getMailboxLock('INBOX');
 
-    const messages = await client.fetchAll(
-      {
-        from: supplier.email,
-        since: new Date('2026-07-27T14:32:49.000Z'), // TODO: add last fetched date
-      },
-      { envelope: true, uid: true, bodyStructure: true },
-    );
+    const messages = (
+      await client.fetchAll(
+        { from: supplier.email, sentSince },
+        { envelope: true, uid: true, bodyStructure: true },
+      )
+    ).filter((message) => {
+      return (
+        message.envelope?.date &&
+        new Date(message.envelope.date).getTime() > sentSince.getTime()
+      );
+    });
 
     const documents: IDocument[] = [];
 
     for (const message of messages) {
-      if (!message.bodyStructure) continue;
+      if (!message.bodyStructure || !message.envelope?.date) continue;
 
+      const messageSentAt = new Date(message.envelope.date);
+      const mailId = String(message.uid);
       const messageAttachments = getMessageAttachmentsFlat(message);
+      let persistedMailId: string | undefined;
 
       if (!messageAttachments.length) continue;
 
@@ -59,6 +81,22 @@ export const fetchNewInvoicesBySupplier = async (
 
             if (!buffer) continue;
 
+            if (!persistedMailId) {
+              await prisma.mail.upsert({
+                where: { id: mailId },
+                create: {
+                  id: mailId,
+                  supplierId: supplier.id,
+                  sentAt: messageSentAt,
+                },
+                update: {
+                  supplierId: supplier.id,
+                  sentAt: messageSentAt,
+                },
+              });
+              persistedMailId = mailId;
+            }
+
             const data = mask.extractData(buffer);
             await prisma.document.create({
               data: {
@@ -67,6 +105,7 @@ export const fetchNewInvoicesBySupplier = async (
                 number: data.number,
                 date: data.date,
                 totalSumWithVat: data.totalSumWithVat,
+                mailId: persistedMailId,
                 items: {
                   create: data.items,
                 },
