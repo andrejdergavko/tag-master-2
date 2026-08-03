@@ -3,8 +3,10 @@ import {
   ImapFlow,
   MessageStructureObject,
 } from 'imapflow/lib/imap-flow';
-import { buffer as streamToBuffer } from 'node:stream/consumers';
 import { WorkSheet, utils } from 'xlsx';
+import { buffer as streamToBuffer } from 'node:stream/consumers';
+import { DocumentDTO, DocumentType, SupplierId } from '../../shared/types';
+import { Document, DocumentItem } from '../../../generated/prisma/client';
 
 export function findAttachments(
   node: MessageStructureObject,
@@ -65,3 +67,22 @@ export const getRowsInJSON = (
     defval: null,
   });
 };
+
+export const toDocumentDTO = (
+  document: Document & { items: DocumentItem[] },
+): DocumentDTO => ({
+  type: document.type as DocumentType,
+  supplierId: document.supplierId as SupplierId,
+  number: document.number ?? undefined,
+  date: document.date ?? undefined,
+  totalSumWithVat: Number(document.totalSumWithVat),
+  items: document.items.map((item) => ({
+    sku: item.sku ?? undefined,
+    name: item.name,
+    units: item.units,
+    quantity: item.quantity,
+    sumWithVat: Number(item.sumWithVat),
+    description: item.description,
+  })),
+  source: document.source ?? undefined,
+});

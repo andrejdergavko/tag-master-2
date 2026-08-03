@@ -1,13 +1,17 @@
 import { MailboxLockObject } from 'imapflow/lib/imap-flow';
 import { createImapClient } from './client';
-import { getAttachmentBuffer, getMessageAttachmentsFlat } from './utils';
+import {
+  getAttachmentBuffer,
+  getMessageAttachmentsFlat,
+  toDocumentDTO,
+} from './utils';
 import suppliers from '../../modules/suppliers';
-import { IDocument } from '../../shared/types';
+import { DocumentType, DocumentDTO, SupplierId } from '../../shared/types';
 import { prisma } from '../db/prisma';
 
 export const fetchNewInvoicesBySupplier = async (
   supplierId: string,
-): Promise<IDocument[]> => {
+): Promise<DocumentDTO[]> => {
   const client = createImapClient();
   let lock: MailboxLockObject | undefined;
   await client.connect();
@@ -42,7 +46,7 @@ export const fetchNewInvoicesBySupplier = async (
     });
 
     const sentSince =
-      latestMail?.sentAt ?? new Date('2026-07-20T22:43:49.000Z');
+      latestMail?.sentAt ?? new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 
     lock = await client.getMailboxLock('INBOX');
 
@@ -51,14 +55,13 @@ export const fetchNewInvoicesBySupplier = async (
         { from: supplier.email, sentSince },
         { envelope: true, uid: true, bodyStructure: true },
       )
-    ).filter((message) => {
-      return (
+    ).filter(
+      (message) =>
         message.envelope?.date &&
-        new Date(message.envelope.date).getTime() > sentSince.getTime()
-      );
-    });
+        new Date(message.envelope.date).getTime() > sentSince.getTime(),
+    );
 
-    const documents: IDocument[] = [];
+    const documents: DocumentDTO[] = [];
 
     for (const message of messages) {
       if (!message.bodyStructure || !message.envelope?.date) continue;
@@ -126,6 +129,17 @@ export const fetchNewInvoicesBySupplier = async (
   }
 };
 
-// export const getSupplierInvoices = async (supplierEmail: string) => {
-//   return null;
-// };
+export const getSupplierDocuments = async (
+  supplierEmail: string,
+): Promise<DocumentDTO[]> => {
+  const documents = await prisma.document.findMany({
+    where: {
+      supplier: {
+        is: { email: supplierEmail },
+      },
+    },
+    include: { items: true },
+  });
+
+  return documents.map((document) => toDocumentDTO(document));
+};

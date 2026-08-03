@@ -1,7 +1,7 @@
 import { MessageStructureObject } from 'imapflow/lib/imap-flow';
 import {
   DocumentType,
-  IDocumentItem,
+  DocumentItemDTO,
   SupplierId,
 } from '../../../../../shared/types';
 import { MIME_TYPE_EXCEL } from '../../../../../shared/constants';
@@ -32,7 +32,7 @@ export const tnVerticalMask = {
     if (!sheet) throw new Error('Sheet not found');
 
     let totalSumWithVat = 0;
-    const invoiceItems: IDocumentItem[] = [];
+    const invoiceItems: DocumentItemDTO[] = [];
 
     getRowsInJSON(sheet).forEach((row) => {
       const rowType = getRowType(row);

@@ -6,17 +6,17 @@ export enum DocumentType {
   OTHER = 'other',
 }
 
-export type IDocument = {
+export type DocumentDTO = {
   type: DocumentType;
   supplierId: SupplierId;
   number?: string;
   date?: Date;
   totalSumWithVat: number;
-  items: IDocumentItem[];
+  items: DocumentItemDTO[];
   source?: string;
 };
 
-export type IDocumentItem = {
+export type DocumentItemDTO = {
   sku?: string;
   name: string;
   units: string;
@@ -25,7 +25,7 @@ export type IDocumentItem = {
   description: string;
 };
 
-export type ISupplier = {
+export type SupplierDTO = {
   id: SupplierId;
   name: string;
   email: string;
@@ -40,5 +40,5 @@ export type IMask = {
   type: DocumentType;
   description: string;
   isMatch: (attachment: MessageStructureObject) => boolean;
-  extractData: (buffer: Buffer) => IDocument;
+  extractData: (buffer: Buffer) => DocumentDTO;
 };
