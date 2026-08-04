@@ -1,6 +1,7 @@
-import { Spin, Table } from 'antd';
+import { PrinterOutlined } from '@ant-design/icons';
+import { Button, Spin, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentItemDTO, SupplierId } from '../shared/types';
 import { useGetDocument } from '../modules/documents/hooks/getDocument';
 
@@ -30,9 +31,21 @@ const itemColumns: ColumnsType<DocumentItemDTO> = [
     dataIndex: 'sumWithVat',
     key: 'sumWithVat',
   },
+  {
+    title: 'Действия',
+    key: 'actions',
+    render: (_, record) => (
+      <Button
+        type="text"
+        icon={<PrinterOutlined />}
+        onClick={() => console.log('print', record)}
+      />
+    ),
+  },
 ];
 
 export default function DocumentPage() {
+  const navigate = useNavigate();
   const { supplierId, documentId } = useParams<{
     supplierId: string;
     documentId: string;
@@ -43,16 +56,37 @@ export default function DocumentPage() {
     documentId as string,
   );
 
+  const backButton = (
+    <Button
+      type="link"
+      onClick={() => navigate(-1)}
+      style={{ paddingInline: 0, marginBottom: 16 }}
+    >
+      Назад
+    </Button>
+  );
+
   if (isLoading) {
-    return <Spin />;
+    return (
+      <div>
+        {backButton}
+        <Spin />
+      </div>
+    );
   }
 
   if (!document) {
-    return <div>Документ не найден</div>;
+    return (
+      <div>
+        {backButton}
+        <div>Документ не найден</div>
+      </div>
+    );
   }
 
   return (
     <div>
+      {backButton}
       <div style={{ marginBottom: 16 }}>
         <div>Тип: {document.type}</div>
         <div>Номер: {document.number ?? '—'}</div>
