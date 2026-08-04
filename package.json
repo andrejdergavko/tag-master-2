@@ -6,7 +6,7 @@
   "main": ".webpack/main",
   "private": true,
   "scripts": {
-    "start": "electron-forge start",
+    "start": "electron-forge start --inspect-electron",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
@@ -25,6 +25,7 @@
     "@electron-forge/plugin-fuses": "^7.11.2",
     "@electron-forge/plugin-webpack": "^7.11.2",
     "@electron/fuses": "^1.8.0",
+    "@tanstack/eslint-plugin-query": "^5.101.4",
     "@types/node": "^26.1.2",
     "@types/pg": "^8.20.3",
     "@types/react": "^19.2.17",
@@ -46,6 +47,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "@tanstack/react-query": "^5.101.4",
     "antd": "^6.5.2",
     "date-fns": "^4.4.0",
     "dotenv": "^17.4.2",

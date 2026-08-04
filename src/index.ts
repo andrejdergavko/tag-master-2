@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import {
   fetchNewInvoicesBySupplier,
   getSupplierDocuments,
+  getDocument,
 } from './services/mail/mailService';
 import { SupplierId } from './shared/types';
 
@@ -24,6 +25,12 @@ ipcMain.handle(
   'mail:get-supplier-documents',
   async (_, supplierId: SupplierId) => {
     return getSupplierDocuments(supplierId);
+  },
+);
+ipcMain.handle(
+  'mail:get-document',
+  async (_, supplierId: SupplierId, documentId: string) => {
+    return getDocument(supplierId, documentId);
   },
 );
 

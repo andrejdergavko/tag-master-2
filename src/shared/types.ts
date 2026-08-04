@@ -7,6 +7,7 @@ export enum DocumentType {
 }
 
 export type DocumentDTO = {
+  id?: string;
   type: DocumentType;
   supplierId: SupplierId;
   number?: string;

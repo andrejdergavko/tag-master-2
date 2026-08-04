@@ -142,3 +142,18 @@ export const getSupplierDocuments = async (
 
   return documents.map((document) => toDocumentDTO(document));
 };
+
+export const getDocument = async (
+  supplierId: SupplierId,
+  documentId: string,
+): Promise<DocumentDTO | null> => {
+  const document = await prisma.document.findFirst({
+    where: {
+      id: documentId,
+      supplierId,
+    },
+    include: { items: true },
+  });
+
+  return document ? toDocumentDTO(document) : null;
+};

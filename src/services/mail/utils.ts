@@ -62,6 +62,7 @@ export const getAttachmentBuffer = async (
 export const toDocumentDTO = (
   document: Document & { items: DocumentItem[] },
 ): DocumentDTO => ({
+  id: document.id,
   type: document.type as DocumentType,
   supplierId: document.supplierId as SupplierId,
   number: document.number ?? undefined,
