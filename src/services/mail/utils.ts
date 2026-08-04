@@ -59,15 +59,6 @@ export const getAttachmentBuffer = async (
     : null;
 };
 
-export const getRowsInJSON = (
-  sheet: WorkSheet,
-): (string | number | null)[][] => {
-  return utils.sheet_to_json(sheet, {
-    header: 1,
-    defval: null,
-  });
-};
-
 export const toDocumentDTO = (
   document: Document & { items: DocumentItem[] },
 ): DocumentDTO => ({

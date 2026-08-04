@@ -6,9 +6,8 @@ import {
 } from '../../../../../shared/types';
 import { MIME_TYPE_EXCEL } from '../../../../../shared/constants';
 import { read } from 'xlsx';
-import { getRowsInJSON } from '../../../../../services/mail/utils';
 import { getProductRowData, getRowType, getTotalRowData } from './utils';
-import { parseInvoiceDate } from '../utils';
+import { getRowsInJSON, parseInvoiceDate } from '../utils';
 
 export const tnVerticalMask = {
   type: DocumentType.TN,
