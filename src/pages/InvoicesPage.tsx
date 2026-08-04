@@ -1,39 +1,40 @@
-import { useState } from 'react';
 import { Button } from 'antd';
-import { SupplierId } from '../shared/types';
+import { DocumentDTO, SupplierId } from '../shared/types';
 
 export default function InvoicesPage() {
-  const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<string>('Ready');
-
-  const handleFetchFirstMessage = async () => {
+  const handleLoadDocuments = async () => {
     try {
-      setError(null);
-      setStatus('Loading...');
-
-      // @ts-ignore
-      const result = await window.electron.mail.fetchNewInvoicesBySupplier(
-        SupplierId.AUTOPITER,
-      );
+      const result: DocumentDTO[] =
+        // @ts-ignore
+        await window.electron.mail.getSupplierDocuments(SupplierId.AUTOPITER);
 
       console.log(result);
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : 'Failed to fetch inbox preview';
-      setError(message);
-      setStatus('Failed');
+      console.log(error);
+    }
+  };
+
+  const handleFetchNewInvoicesBySupplier = async () => {
+    try {
+      const result: DocumentDTO[] =
+        // @ts-ignore
+        await window.electron.mail.fetchNewInvoicesBySupplier(
+          SupplierId.AUTOPITER,
+        );
+      console.log(result);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   return (
     <div>
-      <Button type="primary" onClick={handleFetchFirstMessage}>
-        Fetch First Message
+      <Button type="primary" onClick={handleLoadDocuments}>
+        Load Autopiter Documents
       </Button>
-      <div style={{ marginTop: 16 }}>{status}</div>
-      {error ? <div style={{ marginTop: 8, color: 'red' }}>{error}</div> : null}
+      <Button type="primary" onClick={handleFetchNewInvoicesBySupplier}>
+        fetch documents
+      </Button>
     </div>
   );
 }

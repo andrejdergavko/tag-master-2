@@ -11,9 +11,10 @@ const electronHandler = {
         supplierId,
       );
     },
-    // getSupplierInvoices() {
-    //   return ipcRenderer.invoke('mail:get-supplier-invoices');
-    // },
+    getSupplierDocuments(supplierEmail: string): Promise<DocumentDTO[]> {
+      console.log('getSupplierDocuments', supplierEmail);
+      return ipcRenderer.invoke('mail:get-supplier-documents', supplierEmail);
+    },
   },
 };
 

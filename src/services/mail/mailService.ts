@@ -46,8 +46,7 @@ export const fetchNewInvoicesBySupplier = async (
     });
 
     const sentSince =
-      latestMail?.sentAt ?? new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
-
+      latestMail?.sentAt ?? new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
     lock = await client.getMailboxLock('INBOX');
 
     const messages = (
@@ -130,12 +129,12 @@ export const fetchNewInvoicesBySupplier = async (
 };
 
 export const getSupplierDocuments = async (
-  supplierEmail: string,
+  supplierId: SupplierId,
 ): Promise<DocumentDTO[]> => {
   const documents = await prisma.document.findMany({
     where: {
       supplier: {
-        is: { email: supplierEmail },
+        is: { id: supplierId },
       },
     },
     include: { items: true },
