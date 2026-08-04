@@ -4,6 +4,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentItemDTO, SupplierId } from '../shared/types';
 import { useGetDocument } from '../modules/documents/hooks/useGetDocument';
+import { Routes } from '../shared/constants/routes';
 
 const itemColumns: ColumnsType<DocumentItemDTO> = [
   {
@@ -96,6 +97,18 @@ export default function DocumentPage() {
         </div>
         <div>Сумма с НДС: {document.totalSumWithVat}</div>
       </div>
+      <Button
+        type="primary"
+        icon={<PrinterOutlined />}
+        style={{ marginBottom: 16 }}
+        onClick={() =>
+          navigate(
+            `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
+          )
+        }
+      >
+        Печать ценников
+      </Button>
       <Table
         rowKey={(_, index) => String(index)}
         columns={itemColumns}
