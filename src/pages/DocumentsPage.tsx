@@ -1,8 +1,9 @@
-import { Spin, Table } from 'antd';
+import { Button, Spin, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentDTO, SupplierId } from '../shared/types';
-import { useGetDocuments } from '../modules/documents/hooks/getDocuments';
+import { useGetDocuments } from '../modules/documents/hooks/useGetDocuments';
+import { useFetchDocuments } from '../modules/documents/hooks/useАetchDocuments';
 import { Routes } from '../shared/constants/routes';
 
 const columns: ColumnsType<DocumentDTO> = [
@@ -36,24 +37,37 @@ export default function DocumentsPage() {
   const { data: documents, isLoading } = useGetDocuments(
     supplierId as SupplierId,
   );
+  const { mutate: fetchDocuments, isPending: isFetching } = useFetchDocuments(
+    supplierId as SupplierId,
+  );
 
   if (isLoading) {
     return <Spin />;
   }
 
   return (
-    <Table
-      rowKey={(record) => record.id ?? `${record.type}-${record.number}`}
-      columns={columns}
-      dataSource={documents}
-      pagination={false}
-      onRow={(record) => ({
-        onClick: () => {
-          if (!record.id || !supplierId) return;
-          navigate(`${Routes.documents}/${supplierId}/${record.id}`);
-        },
-        style: { cursor: record.id ? 'pointer' : undefined },
-      })}
-    />
+    <div>
+      <Button
+        type="primary"
+        loading={isFetching}
+        onClick={() => fetchDocuments()}
+        style={{ marginBottom: 16 }}
+      >
+        Загрузить с почты
+      </Button>
+      <Table
+        rowKey={(record) => record.id ?? `${record.type}-${record.number}`}
+        columns={columns}
+        dataSource={documents}
+        pagination={false}
+        onRow={(record) => ({
+          onClick: () => {
+            if (!record.id || !supplierId) return;
+            navigate(`${Routes.documents}/${supplierId}/${record.id}`);
+          },
+          style: { cursor: record.id ? 'pointer' : undefined },
+        })}
+      />
+    </div>
   );
 }

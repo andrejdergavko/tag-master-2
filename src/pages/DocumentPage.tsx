@@ -3,7 +3,7 @@ import { Button, Spin, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentItemDTO, SupplierId } from '../shared/types';
-import { useGetDocument } from '../modules/documents/hooks/getDocument';
+import { useGetDocument } from '../modules/documents/hooks/useGetDocument';
 
 const itemColumns: ColumnsType<DocumentItemDTO> = [
   {
@@ -92,9 +92,7 @@ export default function DocumentPage() {
         <div>Номер: {document.number ?? '—'}</div>
         <div>
           Дата:{' '}
-          {document.date
-            ? new Date(document.date).toLocaleDateString()
-            : '—'}
+          {document.date ? new Date(document.date).toLocaleDateString() : '—'}
         </div>
         <div>Сумма с НДС: {document.totalSumWithVat}</div>
       </div>
