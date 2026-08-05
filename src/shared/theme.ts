@@ -18,6 +18,7 @@ export const theme = {
     Layout: {
       headerBg: colors.primary,
       triggerBg: colors.primary,
+      headerHeight: 55,
       headerPadding: '0px 30px',
       lightSiderBg: '#f7f9fc',
     },

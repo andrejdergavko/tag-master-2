@@ -10,6 +10,7 @@ import DocumentTypeTag from '../shared/components/DocumentTypeTag';
 import { formatDate } from '../shared/utils/date';
 import { TagType } from '../services/printer/constants';
 import suppliers from '../modules/suppliers';
+import './DocumentPage.scss';
 
 const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
   {
@@ -91,14 +92,29 @@ export default function DocumentPage() {
           >
             <div>
               <div>
-                Тип: <DocumentTypeTag type={document.type} />
+                Тип:
+                <span className="document-page-field-value">
+                  <DocumentTypeTag type={document.type} />
+                </span>
               </div>
-              <div>Номер: {document.number ?? '—'}</div>
               <div>
-                Дата:{' '}
-                {document.date ? formatDate(document.date) : '—'}
+                Номер:
+                <span className="document-page-field-value">
+                  {document.number ?? '—'}
+                </span>
               </div>
-              <div>Сумма с НДС: {document.totalSumWithVat}</div>
+              <div>
+                Дата:
+                <span className="document-page-field-value">
+                  {document.date ? formatDate(document.date) : '—'}
+                </span>
+              </div>
+              <div>
+                Сумма с НДС:
+                <span className="document-page-field-value">
+                  {document.totalSumWithVat}
+                </span>
+              </div>
             </div>
             <Button
               type="primary"
