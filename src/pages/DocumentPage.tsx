@@ -36,7 +36,7 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
     key: 'sumWithVat',
   },
   {
-    title: 'Действия',
+    title: '',
     key: 'actions',
     render: (_, record) => (
       <Button

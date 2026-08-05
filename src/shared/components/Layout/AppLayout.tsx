@@ -2,33 +2,35 @@ import { Layout, theme } from 'antd';
 import { Outlet } from 'react-router-dom';
 
 import AppHeader from './AppHeader';
-import AppSidebar from './AppSidebar';
+import AppSidebar from './AppSidebar/AppSidebar';
 
-const { Content } = Layout;
+const { Content, Footer } = Layout;
 
 export default function AppLayout() {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <AppHeader />
+      <AppSidebar />
       <Layout>
-        <AppSidebar />
-        <Layout style={{ padding: '16px' }}>
-          <Content
+        <AppHeader />
+        <Content style={{ margin: '0 16px' }}>
+          <div
             style={{
+              margin: '16px 0',
               padding: 24,
-              margin: 0,
-              minHeight: 280,
+              minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
           >
             <Outlet />
-          </Content>
-        </Layout>
+          </div>
+        </Content>
       </Layout>
     </Layout>
   );
