@@ -9,7 +9,7 @@ const CODE_TEXT_X = BARCODE_WIDTH;
 const BARCODE_Y = 157;
 const BARCODE_HEIGHT = 50;
 const SUPPLIER_CODE_WIDTH = Math.round(LABEL_WIDTH * 0.4);
-const SPECIAL_CODE_Y = BARCODE_Y - 30;
+const SPECIAL_CODE_Y = BARCODE_Y - 27;
 
 const get4x25TagLayout = ({
   name,
@@ -42,24 +42,21 @@ const get4x25TagLayout = ({
     // ^FO x,y — позиция поля (Field Origin), x вправо, y вниз
     // ^A@N,h,w,font — Unicode TrueType шрифт:
     //   N — ориентация (Normal), h/w — высота/ширина символа, TT0003M_ — шрифт с кириллицей
-    // ^TB orientation,width,height — текстовый блок с переносами и обрезкой:
-    //   orientation — N/R/I/B,
-    //   width — ширина блока в dots,
-    //   height — высота блока в dots (лишний текст обрезается, не налазит на последнюю строку)
-    //   Важно: ^FB при превышении maxLines перезаписывает последнюю строку; ^TB — обрезает.
+    // ^TB orientation,width,height — текстовый блок с обрезкой по высоте:
+    //   переносы считаются в wrapTitle (\n + дефис при разрыве слова)
     // ^FD...^FS — данные поля и конец поля (Field Data / Field Separator)
-    `^FO10,0^A@N,22,22,TT0003M_^TBN,300,132^FD${title + title + title + title}^FS`,
+    `^FO10,0^A@N,22,22,TT0003M_^FB300,200,0,L,0^FD${'Замок зажигания Евро  / Димитровград, страна происхождения - РОССИЯ Замок зажигания Евро  / Димитровград, страна происхождения - РОССИЯ Замок зажигания Евро  / Димитровград, страна происхождения - РОССИЯ Замок зажигания Евро  / Димитровград, страна происхождения - РОССИЯ'.split('').join('\\')}^FS`,
+
+    // Сплошной блок над штрихкодом:
+    // ^GB width,height,thickness,color — прямоугольник (Graphic Box);
+    //   thickness = height → заливка, W — белый, B — чёрный
+    `^FO10,130^GB${LABEL_WIDTH},300,100,W^FS`,
 
     // Строка над штрихкодом: 30% код поставщика + 70% спецкод
     // Левая часть (30%) — код поставщика, например APTR
-    `^FO20,${SPECIAL_CODE_Y}^A@N,30,30,TT0003M_^FB${SUPPLIER_CODE_WIDTH},1,0,L,0^FD${supplierCode}^FS`,
+    `^FO20,${SPECIAL_CODE_Y}^A@N,28,28,TT0003M_^FB${SUPPLIER_CODE_WIDTH},1,0,L,0^FD${supplierCode}^FS`,
     // Правая часть (70%) — спецкод: X + месяц (MM) + год (YY) + A + цена, например X0826A33.2
-    `^FO${SUPPLIER_CODE_WIDTH},${SPECIAL_CODE_Y}^A@N,30,30,TT0003M_^FB${LABEL_WIDTH - SUPPLIER_CODE_WIDTH},1,0,L,0^FD${specialCode}^FS`,
-
-    // // Горизонтальная линия-разделитель над блоком штрихкода:
-    // // ^GB width,height,thickness — прямоугольник/линия (Graphic Box)
-    // //   width = ширина этикетки, height = thickness = 2 → тонкая горизонтальная линия
-    // `^FO5,${SEPARATOR_Y + 100}^GB${LABEL_WIDTH},2,2^FS`,
+    `^FO${SUPPLIER_CODE_WIDTH},${SPECIAL_CODE_Y}^A@N,28,28,TT0003M_^FB${LABEL_WIDTH - SUPPLIER_CODE_WIDTH},1,0,L,0^FD${specialCode}^FS`,
 
     // Штрихкод Code 128 (левые ~70% ширины этикетки):
     // ^FO x,y — позиция штрихкода (слева)
