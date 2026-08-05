@@ -69,6 +69,7 @@ export const toDocumentDTO = (
   date: document.date ?? undefined,
   totalSumWithVat: Number(document.totalSumWithVat),
   items: document.items.map((item) => ({
+    id: item.id,
     sku: item.sku ?? undefined,
     name: item.name,
     units: item.units,

@@ -18,6 +18,7 @@ export type DocumentDTO = {
 };
 
 export type DocumentItemDTO = {
+  id?: number;
   sku?: string;
   name: string;
   units: string;

@@ -48,7 +48,7 @@ model Mail {
 }
 
 model DocumentItem {
-  id          String   @id @default(cuid())
+  id          Int      @id @default(autoincrement())
   documentId  String
   document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
   sku         String?

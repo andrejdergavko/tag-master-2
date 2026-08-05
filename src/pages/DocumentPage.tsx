@@ -38,22 +38,22 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
   {
     title: 'Действия',
     key: 'actions',
-    render: (_, record, index) => (
+    render: (_, record) => (
       <Button
         type="text"
         icon={<PrinterOutlined />}
-        onClick={() =>
+        onClick={() => {
           // @ts-ignore
           window.electron.printer.printTags(TagType.FOUR_X_TWO_FIVE, [
             {
               name: record.name,
               price: record.sumWithVat,
               supplierCode,
-              number: String(index + 1),
+              number: String(record.id),
               sku: record.sku,
             },
-          ])
-        }
+          ]);
+        }}
       />
     ),
   },
@@ -115,7 +115,7 @@ export default function DocumentPage() {
         Печать ценников
       </Button>
       <Table
-        rowKey={(_, index) => String(index)}
+        rowKey={(record) => String(record.id)}
         columns={getItemColumns(supplier?.code ?? '')}
         dataSource={document.items}
         pagination={false}

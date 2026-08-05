@@ -42,7 +42,7 @@ ipcMain.handle('printer:get-printer-list', async () => {
 ipcMain.handle(
   'printer:print-tags',
   async <T extends TagType>(
-    _,
+    _: unknown,
     tagType: T,
     data: TagData<T>[],
     printerName?: string,
