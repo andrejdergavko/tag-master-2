@@ -26,6 +26,7 @@ export default function AppSidebar() {
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
       theme="light"
+      collapsedWidth={70}
     >
       <Menu
         mode="inline"

@@ -37,6 +37,7 @@ export const theme = {
       itemActiveBg: colors.primaryActive,
       activeBarBorderWidth: 0,
       itemBg: '#fff',
+      collapsedIconSize: 26,
     },
   },
 };
