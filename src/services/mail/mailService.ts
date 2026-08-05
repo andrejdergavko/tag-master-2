@@ -6,9 +6,8 @@ import {
   toDocumentDTO,
 } from './utils';
 import suppliers from '../../modules/suppliers';
-import { DocumentType, DocumentDTO, SupplierId } from '../../shared/types';
+import { DocumentDTO, SupplierId } from '../../shared/types';
 import { prisma } from '../db/prisma';
-import { getPrinterList, printZpl } from '../printer/printerService';
 
 export const fetchNewInvoicesBySupplier = async (
   supplierId: string,
