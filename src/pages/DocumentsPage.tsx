@@ -1,10 +1,11 @@
 import { Button, Spin, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate, useParams } from 'react-router-dom';
-import { DocumentDTO, SupplierId } from '../shared/types';
+import { DocumentDTO, DocumentType, SupplierId } from '../shared/types';
 import { useGetDocuments } from '../modules/documents/hooks/useGetDocuments';
 import { useFetchDocuments } from '../modules/documents/hooks/useАetchDocuments';
 import { Routes } from '../shared/constants/routes';
+import DocumentTypeTag from '../shared/components/DocumentTypeTag';
 
 const columns: ColumnsType<DocumentDTO> = [
   {
@@ -17,6 +18,7 @@ const columns: ColumnsType<DocumentDTO> = [
     title: 'Тип',
     dataIndex: 'type',
     key: 'type',
+    render: (type: DocumentType) => <DocumentTypeTag type={type} />,
   },
   {
     title: 'Номер',
