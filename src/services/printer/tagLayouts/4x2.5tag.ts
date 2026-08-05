@@ -6,7 +6,7 @@ const LABEL_HEIGHT = 180;
 
 const BARCODE_WIDTH = Math.round(LABEL_WIDTH * 0.7);
 const CODE_TEXT_X = BARCODE_WIDTH;
-const BARCODE_Y = 150;
+const BARCODE_Y = 157;
 const BARCODE_HEIGHT = 50;
 const SUPPLIER_CODE_WIDTH = Math.round(LABEL_WIDTH * 0.4);
 const SPECIAL_CODE_Y = BARCODE_Y - 30;
@@ -48,7 +48,7 @@ const get4x25TagLayout = ({
     //   height — высота блока в dots (лишний текст обрезается, не налазит на последнюю строку)
     //   Важно: ^FB при превышении maxLines перезаписывает последнюю строку; ^TB — обрезает.
     // ^FD...^FS — данные поля и конец поля (Field Data / Field Separator)
-    `^FO10,0^A@N,22,22,TT0003M_^TBN,300,110^FD${title}^FS`,
+    `^FO10,0^A@N,22,22,TT0003M_^TBN,300,132^FD${title + title + title + title}^FS`,
 
     // Строка над штрихкодом: 30% код поставщика + 70% спецкод
     // Левая часть (30%) — код поставщика, например APTR
@@ -77,7 +77,7 @@ const get4x25TagLayout = ({
     // ^FO x,y — старт с правой трети этикетки
     // ^FB w,1,0,C,0 — одна строка по центру в оставшихся 30%
     // ^FD...^FS — тот же номер, что в штрихкоде
-    `^FO${CODE_TEXT_X},${BARCODE_Y + 10}^A@N,28,28,TT0003M_^FB${LABEL_WIDTH - CODE_TEXT_X},1,0,C,0^FD${number}^FS`,
+    `^FO${CODE_TEXT_X},${BARCODE_Y + 7}^A@N,28,28,TT0003M_^FB${LABEL_WIDTH - CODE_TEXT_X},1,0,C,0^FD${number}^FS`,
 
     '~SD15',
 
