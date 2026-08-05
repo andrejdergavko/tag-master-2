@@ -1,4 +1,16 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .app-header-logo {
   color: #fff;
   font-size: 18px;
+}
+
+.app-header-settings {
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
 }

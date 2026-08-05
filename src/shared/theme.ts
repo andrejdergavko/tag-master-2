@@ -36,7 +36,7 @@ export const theme = {
       itemSelectedBg: colors.primarySoft,
       itemActiveBg: colors.primaryActive,
       activeBarBorderWidth: 0,
-      itemBg: 'transparent',
+      itemBg: '#fff',
     },
   },
 };

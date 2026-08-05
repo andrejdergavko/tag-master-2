@@ -1,4 +1,5 @@
 import { Layout, Menu } from 'antd';
+import { SettingOutlined } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
 import { Routes, pageNames, Pages } from '../../constants/routes';
 import suppliers from '../../../modules/suppliers';
@@ -24,7 +25,7 @@ export default function AppHeader() {
     : undefined;
 
   return (
-    <Header>
+    <Header className="app-header">
       <div className="app-header-logo">Расценка</div>
       {/* <Menu
         theme="dark"
@@ -33,6 +34,7 @@ export default function AppHeader() {
         items={headerMenuItems}
         style={{ flex: 1, minWidth: 0 }}
       /> */}
+      <SettingOutlined className="app-header-settings" />
     </Header>
   );
 }

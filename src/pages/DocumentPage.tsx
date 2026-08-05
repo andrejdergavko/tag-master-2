@@ -79,29 +79,37 @@ export default function DocumentPage() {
       {!isLoading && !document && <div>Документ не найден</div>}
       {!isLoading && document && (
         <>
-          <div style={{ marginBottom: 16 }}>
-            <div>Тип: {document.type}</div>
-            <div>Номер: {document.number ?? '—'}</div>
-            <div>
-              Дата:{' '}
-              {document.date
-                ? new Date(document.date).toLocaleDateString()
-                : '—'}
-            </div>
-            <div>Сумма с НДС: {document.totalSumWithVat}</div>
-          </div>
-          <Button
-            type="primary"
-            icon={<PrinterOutlined />}
-            style={{ marginBottom: 16 }}
-            onClick={() =>
-              navigate(
-                `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
-              )
-            }
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              marginBottom: 16,
+            }}
           >
-            Печать ценников
-          </Button>
+            <div>
+              <div>Тип: {document.type}</div>
+              <div>Номер: {document.number ?? '—'}</div>
+              <div>
+                Дата:{' '}
+                {document.date
+                  ? new Date(document.date).toLocaleDateString()
+                  : '—'}
+              </div>
+              <div>Сумма с НДС: {document.totalSumWithVat}</div>
+            </div>
+            <Button
+              type="primary"
+              icon={<PrinterOutlined />}
+              onClick={() =>
+                navigate(
+                  `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
+                )
+              }
+            >
+              Печать ценников
+            </Button>
+          </div>
           <Table
             rowKey={(record) => String(record.id)}
             size="small"
