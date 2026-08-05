@@ -12,7 +12,7 @@ export const useGetDocument = (
   supplierId: SupplierId | undefined,
   documentId: string | undefined,
 ) => {
-  return useQuery<DocumentDTO, Error>({
+  return useQuery<DocumentDTO | null, Error>({
     queryKey: [DOCUMENT_QUERY_KEY, supplierId, documentId],
     queryFn: () => {
       if (!supplierId || !documentId) {

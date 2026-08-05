@@ -43,14 +43,13 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
         type="text"
         icon={<PrinterOutlined />}
         onClick={() => {
-          // @ts-ignore
           window.electron.printer.printTags(TagType.FOUR_X_TWO_FIVE, [
             {
-              name: record.name,
-              price: record.sumWithVat,
-              supplierCode,
-              number: String(record.id),
               sku: record.sku,
+              name: record.name,
+              supplierCode,
+              price: record.sumWithVat,
+              number: String(record.id),
             },
           ]);
         }}
@@ -71,55 +70,46 @@ export default function DocumentPage() {
     documentId as string,
   );
 
-  if (isLoading) {
-    return (
-      <div>
-        <BackButton />
-        <Spin />
-      </div>
-    );
-  }
-
-  if (!document) {
-    return (
-      <div>
-        <BackButton />
-        <div>Документ не найден</div>
-      </div>
-    );
-  }
-
   const supplier = suppliers.find((item) => item.id === supplierId);
 
   return (
     <div>
       <BackButton />
-
-      <div style={{ marginBottom: 16 }}>
-        <div>Тип: {document.type}</div>
-        <div>Номер: {document.number ?? '—'}</div>
-        <div>
-          Дата:{' '}
-          {document.date ? new Date(document.date).toLocaleDateString() : '—'}
-        </div>
-        <div>Сумма с НДС: {document.totalSumWithVat}</div>
-      </div>
-      <Button
-        type="primary"
-        icon={<PrinterOutlined />}
-        style={{ marginBottom: 16 }}
-        onClick={() =>
-          navigate(`${Routes.documents}/${supplierId}/${documentId}/print-tags`)
-        }
-      >
-        Печать ценников
-      </Button>
-      <Table
-        rowKey={(record) => String(record.id)}
-        columns={getItemColumns(supplier?.code ?? '')}
-        dataSource={document.items}
-        pagination={false}
-      />
+      {isLoading && <Spin />}
+      {!isLoading && !document && <div>Документ не найден</div>}
+      {!isLoading && document && (
+        <>
+          <div style={{ marginBottom: 16 }}>
+            <div>Тип: {document.type}</div>
+            <div>Номер: {document.number ?? '—'}</div>
+            <div>
+              Дата:{' '}
+              {document.date
+                ? new Date(document.date).toLocaleDateString()
+                : '—'}
+            </div>
+            <div>Сумма с НДС: {document.totalSumWithVat}</div>
+          </div>
+          <Button
+            type="primary"
+            icon={<PrinterOutlined />}
+            style={{ marginBottom: 16 }}
+            onClick={() =>
+              navigate(
+                `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
+              )
+            }
+          >
+            Печать ценников
+          </Button>
+          <Table
+            rowKey={(record) => String(record.id)}
+            columns={getItemColumns(supplier?.code ?? '')}
+            dataSource={document.items}
+            pagination={false}
+          />
+        </>
+      )}
     </div>
   );
 }

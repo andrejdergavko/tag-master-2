@@ -2,11 +2,11 @@ import { TagType } from './constants';
 
 export type TagDataMap = {
   [TagType.FOUR_X_TWO_FIVE]: {
-    name: string;
-    price: number;
-    supplierCode: string;
-    number: string;
     sku?: string;
+    name: string;
+    supplierCode: string;
+    price: number;
+    number: string;
   };
 };
 
