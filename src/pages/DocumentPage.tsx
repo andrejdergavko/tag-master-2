@@ -104,9 +104,11 @@ export default function DocumentPage() {
           </Button>
           <Table
             rowKey={(record) => String(record.id)}
+            size="small"
             columns={getItemColumns(supplier?.code ?? '')}
             dataSource={document.items}
             pagination={false}
+            rowHoverable={false}
           />
         </>
       )}

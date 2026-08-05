@@ -16,7 +16,7 @@ export default function AppSidebar() {
   }));
 
   return (
-    <Sider width={200}>
+    <Sider width={200} collapsible>
       <Menu
         mode="inline"
         selectedKeys={supplierId ? [supplierId] : []}

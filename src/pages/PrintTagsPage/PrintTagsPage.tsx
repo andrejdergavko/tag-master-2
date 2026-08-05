@@ -77,22 +77,23 @@ export default function PrintTagsPage() {
 
           <Table
             rowKey="key"
+            size="small"
             rowSelection={rowSelection}
             columns={[
               {
                 title: 'Артикул',
-                dataIndex: 'sku',
                 key: 'sku',
+                render: (_, record) => record.data.sku,
               },
               {
                 title: 'Наименование',
-                dataIndex: 'name',
                 key: 'name',
+                render: (_, record) => record.data.name,
               },
               {
                 title: 'Ед.',
-                dataIndex: 'units',
                 key: 'units',
+                render: (_, record) => record.data.units,
               },
               {
                 title: 'Кол-во этикеток',

@@ -38,7 +38,7 @@ export default function AppHeader() {
         alignItems: 'center',
       }}
     >
-      {location.pathname}
+      {/* {location.pathname} */}
     </Header>
   );
 }

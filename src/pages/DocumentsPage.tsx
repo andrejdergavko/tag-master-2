@@ -58,6 +58,7 @@ export default function DocumentsPage() {
       <Table
         rowKey={(record) => record.id ?? `${record.type}-${record.number}`}
         columns={columns}
+        size="small"
         dataSource={documents}
         pagination={false}
         onRow={(record) => ({
