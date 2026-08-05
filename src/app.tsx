@@ -4,7 +4,7 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { Routes as RoutesEnum } from './shared/constants/routes';
 import DocumentsPage from './pages/DocumentsPage';
 import DocumentPage from './pages/DocumentPage';
-import PrintTagsPage from './pages/PrintTagsPage';
+import PrintTagsPage from './pages/PrintTagsPage/PrintTagsPage';
 import AppLayout from './shared/components/Layout/AppLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 

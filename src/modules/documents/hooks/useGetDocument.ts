@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { SupplierId } from '../../../shared/types';
+import { DocumentDTO, SupplierId } from '../../../shared/types';
 
 const getDocument = async (supplierId: SupplierId, documentId: string) => {
   // @ts-ignore
@@ -9,12 +9,18 @@ const getDocument = async (supplierId: SupplierId, documentId: string) => {
 export const DOCUMENT_QUERY_KEY = 'DOCUMENT';
 
 export const useGetDocument = (
-  supplierId: SupplierId,
-  documentId: string,
+  supplierId: SupplierId | undefined,
+  documentId: string | undefined,
 ) => {
-  return useQuery({
+  return useQuery<DocumentDTO, Error>({
     queryKey: [DOCUMENT_QUERY_KEY, supplierId, documentId],
-    queryFn: () => getDocument(supplierId, documentId),
-    enabled: Boolean(supplierId && documentId),
+    queryFn: () => {
+      if (!supplierId || !documentId) {
+        throw new Error('Supplier ID and document ID are required');
+      }
+
+      return getDocument(supplierId, documentId);
+    },
+    enabled: !!supplierId && !!documentId,
   });
 };

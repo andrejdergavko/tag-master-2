@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentItemDTO, SupplierId } from '../shared/types';
 import { useGetDocument } from '../modules/documents/hooks/useGetDocument';
 import { Routes } from '../shared/constants/routes';
+import BackButton from '../shared/components/BackButton';
 
 const itemColumns: ColumnsType<DocumentItemDTO> = [
   {
@@ -57,20 +58,10 @@ export default function DocumentPage() {
     documentId as string,
   );
 
-  const backButton = (
-    <Button
-      type="link"
-      onClick={() => navigate(-1)}
-      style={{ paddingInline: 0, marginBottom: 16 }}
-    >
-      Назад
-    </Button>
-  );
-
   if (isLoading) {
     return (
       <div>
-        {backButton}
+        <BackButton />
         <Spin />
       </div>
     );
@@ -79,7 +70,7 @@ export default function DocumentPage() {
   if (!document) {
     return (
       <div>
-        {backButton}
+        <BackButton />
         <div>Документ не найден</div>
       </div>
     );
@@ -87,7 +78,8 @@ export default function DocumentPage() {
 
   return (
     <div>
-      {backButton}
+      <BackButton />
+
       <div style={{ marginBottom: 16 }}>
         <div>Тип: {document.type}</div>
         <div>Номер: {document.number ?? '—'}</div>
