@@ -6,8 +6,10 @@ import { DocumentItemDTO, SupplierId } from '../shared/types';
 import { useGetDocument } from '../modules/documents/hooks/useGetDocument';
 import { Routes } from '../shared/constants/routes';
 import BackButton from '../shared/components/BackButton';
+import { TagType } from '../services/printer/constants';
+import suppliers from '../modules/suppliers';
 
-const itemColumns: ColumnsType<DocumentItemDTO> = [
+const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
   {
     title: 'Артикул',
     dataIndex: 'sku',
@@ -36,11 +38,22 @@ const itemColumns: ColumnsType<DocumentItemDTO> = [
   {
     title: 'Действия',
     key: 'actions',
-    render: (_, record) => (
+    render: (_, record, index) => (
       <Button
         type="text"
         icon={<PrinterOutlined />}
-        onClick={() => console.log('print', record)}
+        onClick={() =>
+          // @ts-ignore
+          window.electron.printer.printTags(TagType.FOUR_X_TWO_FIVE, [
+            {
+              name: record.name,
+              price: record.sumWithVat,
+              supplierCode,
+              number: String(index + 1),
+              sku: record.sku,
+            },
+          ])
+        }
       />
     ),
   },
@@ -76,6 +89,8 @@ export default function DocumentPage() {
     );
   }
 
+  const supplier = suppliers.find((item) => item.id === supplierId);
+
   return (
     <div>
       <BackButton />
@@ -94,16 +109,14 @@ export default function DocumentPage() {
         icon={<PrinterOutlined />}
         style={{ marginBottom: 16 }}
         onClick={() =>
-          navigate(
-            `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
-          )
+          navigate(`${Routes.documents}/${supplierId}/${documentId}/print-tags`)
         }
       >
         Печать ценников
       </Button>
       <Table
         rowKey={(_, index) => String(index)}
-        columns={itemColumns}
+        columns={getItemColumns(supplier?.code ?? '')}
         dataSource={document.items}
         pagination={false}
       />

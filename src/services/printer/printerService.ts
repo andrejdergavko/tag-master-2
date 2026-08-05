@@ -15,14 +15,14 @@ const getTagLayout = <T extends TagType>(tagType: T, data: TagData<T>) => {
   }
 };
 
-export const printTag = async <T extends TagType>(
+export const printTags = async <T extends TagType>(
   tagType: T,
-  data: TagData<T>,
+  data: TagData<T>[],
   printerName: string = DEFAULT_PRINTER_NAME,
 ) => {
-  const tagLayout = getTagLayout(tagType, data);
+  const tagLayouts = data.map((item) => getTagLayout(tagType, item)).join('');
 
-  const encoded = new TextEncoder().encode(tagLayout);
+  const encoded = new TextEncoder().encode(tagLayouts);
 
   await print(
     {

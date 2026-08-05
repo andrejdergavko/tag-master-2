@@ -29,6 +29,7 @@ export type DocumentItemDTO = {
 export type SupplierDTO = {
   id: SupplierId;
   name: string;
+  code: string;
   email: string;
   masks: IMask[];
 };

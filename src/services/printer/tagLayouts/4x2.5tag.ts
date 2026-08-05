@@ -1,13 +1,89 @@
 import { TagDataMap } from '../types';
 import { TagType } from '../constants';
 
-const get4x25TagLayout = ({ text }: TagDataMap[TagType.FOUR_X_TWO_FIVE]) => {
-  return `
-    ^XA
-    ^FO200,20^A0N,20,20^FD${text}^FS
-    ^BCN,100,Y,N,N^FD${text}^FS
-    ^XZ
-  `;
+const LABEL_WIDTH = 320;
+const LABEL_HEIGHT = 180;
+
+const BARCODE_WIDTH = Math.round(LABEL_WIDTH * 0.7);
+const CODE_TEXT_X = BARCODE_WIDTH;
+const BARCODE_Y = 150;
+const BARCODE_HEIGHT = 50;
+const SUPPLIER_CODE_WIDTH = Math.round(LABEL_WIDTH * 0.4);
+const SPECIAL_CODE_Y = BARCODE_Y - 30;
+
+const get4x25TagLayout = ({
+  name,
+  price,
+  supplierCode,
+  number,
+  sku,
+}: TagDataMap[TagType.FOUR_X_TWO_FIVE]) => {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = String(now.getFullYear() % 100).padStart(2, '0');
+  // Формат: X{MM}{YY}A{цена}, например X0826A33.2
+  const specialCode = `X${month}${year}A${price}`;
+  const title = sku ? `${sku} ${name}` : name;
+
+  return [
+    // ^XA — начало этикетки (Start Format)
+    '^XA',
+
+    // ^CI28 — кодировка UTF-8 (нужна для кириллицы)
+    '^CI28',
+
+    // ^PW — ширина этикетки в dots (Print Width)
+    `^PW${LABEL_WIDTH}`,
+
+    // ^LL — высота этикетки в dots (Label Length)
+    `^LL${LABEL_HEIGHT}`,
+
+    // Название товара (артикул перед названием, если есть):
+    // ^FO x,y — позиция поля (Field Origin), x вправо, y вниз
+    // ^A@N,h,w,font — Unicode TrueType шрифт:
+    //   N — ориентация (Normal), h/w — высота/ширина символа, TT0003M_ — шрифт с кириллицей
+    // ^TB orientation,width,height — текстовый блок с переносами и обрезкой:
+    //   orientation — N/R/I/B,
+    //   width — ширина блока в dots,
+    //   height — высота блока в dots (лишний текст обрезается, не налазит на последнюю строку)
+    //   Важно: ^FB при превышении maxLines перезаписывает последнюю строку; ^TB — обрезает.
+    // ^FD...^FS — данные поля и конец поля (Field Data / Field Separator)
+    `^FO10,0^A@N,22,22,TT0003M_^TBN,300,110^FD${title}^FS`,
+
+    // Строка над штрихкодом: 30% код поставщика + 70% спецкод
+    // Левая часть (30%) — код поставщика, например APTR
+    `^FO20,${SPECIAL_CODE_Y}^A@N,30,30,TT0003M_^FB${SUPPLIER_CODE_WIDTH},1,0,L,0^FD${supplierCode}^FS`,
+    // Правая часть (70%) — спецкод: X + месяц (MM) + год (YY) + A + цена, например X0826A33.2
+    `^FO${SUPPLIER_CODE_WIDTH},${SPECIAL_CODE_Y}^A@N,30,30,TT0003M_^FB${LABEL_WIDTH - SUPPLIER_CODE_WIDTH},1,0,L,0^FD${specialCode}^FS`,
+
+    // // Горизонтальная линия-разделитель над блоком штрихкода:
+    // // ^GB width,height,thickness — прямоугольник/линия (Graphic Box)
+    // //   width = ширина этикетки, height = thickness = 2 → тонкая горизонтальная линия
+    // `^FO5,${SEPARATOR_Y + 100}^GB${LABEL_WIDTH},2,2^FS`,
+
+    // Штрихкод Code 128 (левые ~70% ширины этикетки):
+    // ^FO x,y — позиция штрихкода (слева)
+    // ^BY moduleWidth — ширина узкого модуля штрихкода в dots
+    // ^BCN,height,showText,textAbove,checkDigit — Code 128:
+    //   N — ориентация (Normal),
+    //   height — высота штрихов,
+    //   showText — Y/N печатать ли подпись под кодом,
+    //   textAbove — Y/N подпись над кодом,
+    //   checkDigit — Y/N доп. контрольная цифра UCC
+    // ^FD...^FS — порядковый номер, закодированный в штрихкоде
+    `^FO20,${BARCODE_Y}^BY2^BCN,${BARCODE_HEIGHT},N,N,N^FD${number}^FS`,
+
+    // Порядковый номер справа (~30% ширины):
+    // ^FO x,y — старт с правой трети этикетки
+    // ^FB w,1,0,C,0 — одна строка по центру в оставшихся 30%
+    // ^FD...^FS — тот же номер, что в штрихкоде
+    `^FO${CODE_TEXT_X},${BARCODE_Y + 10}^A@N,28,28,TT0003M_^FB${LABEL_WIDTH - CODE_TEXT_X},1,0,C,0^FD${number}^FS`,
+
+    '~SD15',
+
+    // ^XZ — конец этикетки (End Format)
+    '^XZ',
+  ].join('\n');
 };
 
 export default get4x25TagLayout;

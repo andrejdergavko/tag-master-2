@@ -5,6 +5,7 @@ import { ttnVerticalMask } from './masks/ttnVertical/ttnVerticalMask';
 const autopiter: SupplierDTO = {
   id: SupplierId.AUTOPITER,
   name: 'Автопитер',
+  code: 'APTR',
   email: 'dergavko@mail.ru',
   masks: [tnVerticalMask, ttnVerticalMask],
 };
