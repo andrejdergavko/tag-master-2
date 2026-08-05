@@ -33,6 +33,7 @@ export type SupplierDTO = {
   code: string;
   email: string;
   masks: IMask[];
+  icon: string;
 };
 
 export enum SupplierId {

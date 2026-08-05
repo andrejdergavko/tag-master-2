@@ -7,30 +7,34 @@ import DocumentPage from './pages/DocumentPage';
 import PrintTagsPage from './pages/PrintTagsPage/PrintTagsPage';
 import AppLayout from './shared/components/Layout/AppLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConfigProvider } from 'antd/es';
+import { theme } from './shared/theme';
 
 const App = () => {
   const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route element={<AppLayout />} path={RoutesEnum.root}>
-            <Route
-              path={`${RoutesEnum.documents}/:supplierId/:documentId/print-tags`}
-              element={<PrintTagsPage />}
-            />
-            <Route
-              path={`${RoutesEnum.documents}/:supplierId/:documentId`}
-              element={<DocumentPage />}
-            />
-            <Route
-              path={`${RoutesEnum.documents}/:supplierId`}
-              element={<DocumentsPage />}
-            />
-          </Route>
-        </Routes>
-      </Router>
+      <ConfigProvider theme={theme}>
+        <Router>
+          <Routes>
+            <Route element={<AppLayout />} path={RoutesEnum.root}>
+              <Route
+                path={`${RoutesEnum.documents}/:supplierId/:documentId/print-tags`}
+                element={<PrintTagsPage />}
+              />
+              <Route
+                path={`${RoutesEnum.documents}/:supplierId/:documentId`}
+                element={<DocumentPage />}
+              />
+              <Route
+                path={`${RoutesEnum.documents}/:supplierId`}
+                element={<DocumentsPage />}
+              />
+            </Route>
+          </Routes>
+        </Router>
+      </ConfigProvider>
     </QueryClientProvider>
   );
 };

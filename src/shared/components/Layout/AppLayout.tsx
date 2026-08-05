@@ -1,36 +1,45 @@
-import { Layout, theme } from 'antd';
-import { Outlet } from 'react-router-dom';
+import { Breadcrumb, Layout, theme } from 'antd';
+import { Outlet, useParams } from 'react-router-dom';
 
 import AppHeader from './AppHeader';
 import AppSidebar from './AppSidebar/AppSidebar';
+import suppliers from '../../../modules/suppliers';
+import { pageNames, Pages } from '../../constants/routes';
 
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 
 export default function AppLayout() {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const currentYear = new Date().getFullYear();
+  const { supplierId } = useParams();
+  const supplier = suppliers.find((item) => item.id === supplierId);
+
+  const breadcrumbItems = [
+    { title: pageNames[Pages.documents] },
+    ...(supplier ? [{ title: supplier.name }] : []),
+  ];
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <AppSidebar />
+      <AppHeader />
       <Layout>
-        <AppHeader />
-        <Content style={{ margin: '0 16px' }}>
-          <div
+        <AppSidebar />
+        <Layout style={{ padding: '0 24px 24px' }}>
+          <Breadcrumb items={breadcrumbItems} style={{ margin: '16px 0' }} />
+          <Content
             style={{
-              margin: '16px 0',
               padding: 24,
-              minHeight: 360,
+              margin: 0,
+              minHeight: 280,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
           >
             <Outlet />
-          </div>
-        </Content>
+          </Content>
+        </Layout>
       </Layout>
     </Layout>
   );
