@@ -7,6 +7,7 @@ import { useGetDocument } from '../modules/documents/hooks/useGetDocument';
 import { Routes } from '../shared/constants/routes';
 import BackButton from '../shared/components/BackButton';
 import DocumentTypeTag from '../shared/components/DocumentTypeTag';
+import { formatDate } from '../shared/utils/date';
 import { TagType } from '../services/printer/constants';
 import suppliers from '../modules/suppliers';
 
@@ -94,10 +95,8 @@ export default function DocumentPage() {
               </div>
               <div>Номер: {document.number ?? '—'}</div>
               <div>
-                Дата:
-                {document.date
-                  ? new Date(document.date).toLocaleDateString()
-                  : '—'}
+                Дата:{' '}
+                {document.date ? formatDate(document.date) : '—'}
               </div>
               <div>Сумма с НДС: {document.totalSumWithVat}</div>
             </div>

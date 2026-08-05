@@ -6,13 +6,14 @@ import { useGetDocuments } from '../modules/documents/hooks/useGetDocuments';
 import { useFetchDocuments } from '../modules/documents/hooks/useАetchDocuments';
 import { Routes } from '../shared/constants/routes';
 import DocumentTypeTag from '../shared/components/DocumentTypeTag';
+import { formatDate } from '../shared/utils/date';
 
 const columns: ColumnsType<DocumentDTO> = [
   {
     title: 'Дата',
     dataIndex: 'date',
     key: 'date',
-    render: (date?: Date) => (date ? new Date(date).toLocaleDateString() : '—'),
+    render: (date?: Date) => (date ? formatDate(date) : '—'),
   },
   {
     title: 'Тип',
