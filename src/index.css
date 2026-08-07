@@ -6,6 +6,11 @@ body {
   margin: 0;
 }
 
+.ant-table-wrapper .ant-table-tbody > tr > th,
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  transition: none !important;
+}
+
 .ant-table-body {
   scrollbar-width: thin;
   scrollbar-color: #eaeaea transparent;

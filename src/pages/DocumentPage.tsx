@@ -41,13 +41,14 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
     key: 'price',
     width: 100,
     render: (_, record) =>
-      record.quantity ? record.sumWithVat / record.quantity : '—',
+      record.quantity ? (record.sumWithVat / record.quantity).toFixed(2) : '—',
   },
   {
     title: 'Сумма с НДС',
     dataIndex: 'sumWithVat',
     key: 'sumWithVat',
     width: 100,
+    render: (sumWithVat: number) => sumWithVat.toFixed(2),
   },
   {
     title: '',
@@ -88,13 +89,32 @@ export default function DocumentPage() {
   const supplier = suppliers.find((item) => item.id === supplierId);
 
   return (
-    <div>
-      <BackButton />
+    <div
+      style={{
+        // height: '100%',
+        height: '700px',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+      }}
+    >
+      {/* <div>
+        <BackButton />
+      </div> */}
+
       {isLoading && <Spin />}
       {!isLoading && !document && <div>Документ не найден</div>}
       {!isLoading && document && (
-        <>
-          <div
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            // overflow: 'hidden',
+          }}
+        >
+          {/* <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -128,6 +148,25 @@ export default function DocumentPage() {
                 </span>
               </div>
             </div>
+          </div> */}
+          <div style={{ flex: 1, overflow: 'auto', height: '100%' }}>
+            <Table
+              rowKey={(record) => String(record.id)}
+              size="small"
+              columns={getItemColumns(supplier?.code ?? '')}
+              dataSource={document.items}
+              pagination={false}
+              rowHoverable={false}
+              // scroll={{ y: 'calc(100vh - 360px)' }}
+            />
+          </div>
+          {/* <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              marginTop: 16,
+            }}
+          >
             <Button
               type="primary"
               icon={<PrinterOutlined />}
@@ -139,17 +178,8 @@ export default function DocumentPage() {
             >
               Печать ценников
             </Button>
-          </div>
-          <Table
-            rowKey={(record) => String(record.id)}
-            size="small"
-            columns={getItemColumns(supplier?.code ?? '')}
-            dataSource={document.items}
-            pagination={false}
-            rowHoverable={false}
-            scroll={{ y: 'calc(100vh - 360px)' }}
-          />
-        </>
+          </div> */}
+        </div>
       )}
     </div>
   );

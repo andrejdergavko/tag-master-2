@@ -22,7 +22,7 @@ const get4x25TagLayout = ({
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const year = String(now.getFullYear() % 100).padStart(2, '0');
   // Формат: X{MM}{YY}A{цена}, например X0826A33.2
-  const specialCode = `X${month}${year}A${price}`;
+  const specialCode = `X${month}${year}0${price}`;
   const title = sku ? `${sku} ${name}` : name;
 
   return [

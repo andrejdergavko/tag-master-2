@@ -30,6 +30,7 @@ const columns: ColumnsType<DocumentDTO> = [
     title: 'Сумма с НДС',
     dataIndex: 'totalSumWithVat',
     key: 'totalSumWithVat',
+    render: (totalSumWithVat: number) => totalSumWithVat.toFixed(2),
   },
 ];
 
