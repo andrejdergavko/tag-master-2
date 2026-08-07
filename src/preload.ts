@@ -47,6 +47,12 @@ const electronHandler = {
     setDefaultPrinter(printerName: string | null): Promise<void> {
       return ipcRenderer.invoke('config:set-default-printer', printerName);
     },
+    hasImapPassword(): Promise<boolean> {
+      return ipcRenderer.invoke('config:has-imap-password');
+    },
+    setImapPassword(password: string): Promise<void> {
+      return ipcRenderer.invoke('config:set-imap-password', password);
+    },
   },
 };
 

@@ -8,6 +8,8 @@ import {
 import {
   getDefaultPrinter,
   setDefaultPrinter,
+  hasImapPassword,
+  setImapPassword,
 } from './services/config/configService';
 import { getPrinterList, printTags } from './services/printer/printerService';
 import { TagType } from './services/printer/constants';
@@ -63,6 +65,12 @@ ipcMain.handle(
     setDefaultPrinter(printerName);
   },
 );
+ipcMain.handle('config:has-imap-password', () => {
+  return hasImapPassword();
+});
+ipcMain.handle('config:set-imap-password', (_: unknown, password: string) => {
+  setImapPassword(password);
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {

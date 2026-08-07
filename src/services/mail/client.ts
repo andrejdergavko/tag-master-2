@@ -1,4 +1,5 @@
 import { ImapFlow } from 'imapflow';
+import { getImapPassword } from '../config/configService';
 
 export function createImapClient(): ImapFlow {
   return new ImapFlow({
@@ -7,7 +8,7 @@ export function createImapClient(): ImapFlow {
     secure: true,
     auth: {
       user: process.env.EMAIL || '',
-      pass: process.env.PASSWORD || '',
+      pass: getImapPassword() || '',
     },
     logger: false,
   });
