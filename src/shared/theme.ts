@@ -13,6 +13,9 @@ export const theme = {
     sizeStep: 3,
     borderRadius: 16,
     wireframe: false,
+    fontSize: 15,
+    fontFamily:
+      "Calibri, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
   },
   components: {
     Layout: {
@@ -28,8 +31,9 @@ export const theme = {
       itemBorderRadius: 22,
       itemMarginInline: 10,
       itemMarginBlock: 8,
-      itemHeight: 42,
+      itemHeight: 44,
       itemPaddingInline: 14,
+      fontSize: 16,
       itemColor: '#4b5563',
       itemHoverColor: colors.primary,
       itemHoverBg: colors.primaryHover,
@@ -39,6 +43,10 @@ export const theme = {
       activeBarBorderWidth: 0,
       itemBg: '#fff',
       collapsedIconSize: 26,
+    },
+    Table: {
+      cellFontSize: 15,
+      headerFontSize: 15,
     },
   },
 };
