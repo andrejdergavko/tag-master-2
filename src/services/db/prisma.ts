@@ -1,13 +1,25 @@
-import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../../../generated/prisma/client';
+import { getDatabaseUrl } from '../config/configService';
 
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL is required');
-}
+let prismaClient: PrismaClient | null = null;
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+export const getPrisma = (): PrismaClient => {
+  if (!prismaClient) {
+    const connectionString = getDatabaseUrl();
+    if (!connectionString) {
+      throw new Error('DATABASE_URL is required');
+    }
+    prismaClient = new PrismaClient({
+      adapter: new PrismaPg({ connectionString }),
+    });
+  }
+  return prismaClient;
+};
 
-export const prisma = new PrismaClient({ adapter });
+export const resetPrismaClient = (): void => {
+  if (prismaClient) {
+    void prismaClient.$disconnect();
+    prismaClient = null;
+  }
+};

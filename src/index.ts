@@ -10,7 +10,12 @@ import {
   setDefaultPrinter,
   hasImapPassword,
   setImapPassword,
+  hasEmail,
+  setEmail,
+  hasDatabaseUrl,
+  setDatabaseUrl,
 } from './services/config/configService';
+import { resetPrismaClient } from './services/db/prisma';
 import { getPrinterList, printTags } from './services/printer/printerService';
 import { TagType } from './services/printer/constants';
 import { TagData } from './services/printer/types';
@@ -70,6 +75,19 @@ ipcMain.handle('config:has-imap-password', () => {
 });
 ipcMain.handle('config:set-imap-password', (_: unknown, password: string) => {
   setImapPassword(password);
+});
+ipcMain.handle('config:has-email', () => {
+  return hasEmail();
+});
+ipcMain.handle('config:set-email', (_: unknown, email: string) => {
+  setEmail(email);
+});
+ipcMain.handle('config:has-database-url', () => {
+  return hasDatabaseUrl();
+});
+ipcMain.handle('config:set-database-url', (_: unknown, databaseUrl: string) => {
+  setDatabaseUrl(databaseUrl);
+  resetPrismaClient();
 });
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.

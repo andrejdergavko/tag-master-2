@@ -1,10 +1,16 @@
 import { safeStorage } from 'electron';
 import Store from 'electron-store';
 
+type EncryptedKey =
+  | 'imapPasswordEncrypted'
+  | 'emailEncrypted'
+  | 'databaseUrlEncrypted';
+
 export type AppConfig = {
   defaultPrinter: string | null;
-  /** Base64 of safeStorage-encrypted IMAP password */
   imapPasswordEncrypted: string | null;
+  emailEncrypted: string | null;
+  databaseUrlEncrypted: string | null;
 };
 
 const store = new Store<AppConfig>({
@@ -12,31 +18,25 @@ const store = new Store<AppConfig>({
   defaults: {
     defaultPrinter: null,
     imapPasswordEncrypted: null,
+    emailEncrypted: null,
+    databaseUrlEncrypted: null,
   },
 });
 
-export const getDefaultPrinter = (): string | null => {
-  return store.get('defaultPrinter');
+const hasEncrypted = (key: EncryptedKey): boolean => {
+  return Boolean(store.get(key));
 };
 
-export const setDefaultPrinter = (printerName: string | null): void => {
-  store.set('defaultPrinter', printerName);
-};
-
-export const hasImapPassword = (): boolean => {
-  return Boolean(store.get('imapPasswordEncrypted'));
-};
-
-export const setImapPassword = (password: string): void => {
+const setEncrypted = (key: EncryptedKey, value: string): void => {
   if (!safeStorage.isEncryptionAvailable()) {
     throw new Error('Secure storage is not available on this system');
   }
-  const encrypted = safeStorage.encryptString(password);
-  store.set('imapPasswordEncrypted', encrypted.toString('base64'));
+  const encrypted = safeStorage.encryptString(value);
+  store.set(key, encrypted.toString('base64'));
 };
 
-export const getImapPassword = (): string | null => {
-  const encrypted = store.get('imapPasswordEncrypted');
+const getEncrypted = (key: EncryptedKey): string | null => {
+  const encrypted = store.get(key);
   if (!encrypted) {
     return null;
   }
@@ -49,3 +49,30 @@ export const getImapPassword = (): string | null => {
     return null;
   }
 };
+
+export const getDefaultPrinter = (): string | null => {
+  return store.get('defaultPrinter');
+};
+
+export const setDefaultPrinter = (printerName: string | null): void => {
+  store.set('defaultPrinter', printerName);
+};
+
+export const hasImapPassword = (): boolean =>
+  hasEncrypted('imapPasswordEncrypted');
+export const setImapPassword = (password: string): void =>
+  setEncrypted('imapPasswordEncrypted', password);
+export const getImapPassword = (): string | null =>
+  getEncrypted('imapPasswordEncrypted');
+
+export const hasEmail = (): boolean => hasEncrypted('emailEncrypted');
+export const setEmail = (email: string): void =>
+  setEncrypted('emailEncrypted', email);
+export const getEmail = (): string | null => getEncrypted('emailEncrypted');
+
+export const hasDatabaseUrl = (): boolean =>
+  hasEncrypted('databaseUrlEncrypted');
+export const setDatabaseUrl = (databaseUrl: string): void =>
+  setEncrypted('databaseUrlEncrypted', databaseUrl);
+export const getDatabaseUrl = (): string | null =>
+  getEncrypted('databaseUrlEncrypted');

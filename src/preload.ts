@@ -53,6 +53,18 @@ const electronHandler = {
     setImapPassword(password: string): Promise<void> {
       return ipcRenderer.invoke('config:set-imap-password', password);
     },
+    hasEmail(): Promise<boolean> {
+      return ipcRenderer.invoke('config:has-email');
+    },
+    setEmail(email: string): Promise<void> {
+      return ipcRenderer.invoke('config:set-email', email);
+    },
+    hasDatabaseUrl(): Promise<boolean> {
+      return ipcRenderer.invoke('config:has-database-url');
+    },
+    setDatabaseUrl(databaseUrl: string): Promise<void> {
+      return ipcRenderer.invoke('config:set-database-url', databaseUrl);
+    },
   },
 };
 

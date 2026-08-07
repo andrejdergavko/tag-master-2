@@ -7,7 +7,7 @@ import {
 } from './utils';
 import suppliers from '../../modules/suppliers';
 import { DocumentDTO, SupplierId } from '../../shared/types';
-import { prisma } from '../db/prisma';
+import { getPrisma } from '../db/prisma';
 
 export const fetchNewInvoicesBySupplier = async (
   supplierId: string,
@@ -20,7 +20,7 @@ export const fetchNewInvoicesBySupplier = async (
   if (!supplier) throw new Error(`Supplier ${supplierId} not found`);
 
   try {
-    await prisma.supplier.upsert({
+    await getPrisma().supplier.upsert({
       where: { id: supplier.id },
       create: {
         id: supplier.id,
@@ -33,7 +33,7 @@ export const fetchNewInvoicesBySupplier = async (
       },
     });
 
-    const latestMail = await prisma.mail.findFirst({
+    const latestMail = await getPrisma().mail.findFirst({
       where: {
         supplier: {
           is: {
@@ -87,7 +87,7 @@ export const fetchNewInvoicesBySupplier = async (
                 if (!buffer) continue;
 
                 if (!persistedMailId) {
-                  await prisma.mail.upsert({
+                  await getPrisma().mail.upsert({
                     where: { id: mailId },
                     create: {
                       id: mailId,
@@ -103,7 +103,7 @@ export const fetchNewInvoicesBySupplier = async (
                 }
 
                 const data = mask.extractData(buffer);
-                await prisma.document.create({
+                await getPrisma().document.create({
                   data: {
                     type: data.type,
                     supplierId: data.supplierId,
@@ -139,7 +139,7 @@ export const fetchNewInvoicesBySupplier = async (
 export const getSupplierDocuments = async (
   supplierId: SupplierId,
 ): Promise<DocumentDTO[]> => {
-  const documents = await prisma.document.findMany({
+  const documents = await getPrisma().document.findMany({
     where: {
       supplier: {
         is: { id: supplierId },
@@ -156,7 +156,7 @@ export const getDocument = async (
   supplierId: SupplierId,
   documentId: string,
 ): Promise<DocumentDTO | null> => {
-  const document = await prisma.document.findFirst({
+  const document = await getPrisma().document.findFirst({
     where: {
       id: documentId,
       supplierId,
