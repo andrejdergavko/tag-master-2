@@ -17,6 +17,13 @@ import {
 } from './services/config/configService';
 import { resetPrismaClient } from './services/db/prisma';
 import { getPrinterList, printTags } from './services/printer/printerService';
+import {
+  checkForUpdates,
+  getAppVersion,
+  getUpdateStatus,
+  initAutoUpdater,
+  quitAndInstall,
+} from './services/update/updateService';
 import { TagType } from './services/printer/constants';
 import { TagData } from './services/printer/types';
 import { SupplierId } from './shared/types';
@@ -89,6 +96,18 @@ ipcMain.handle('config:set-database-url', (_: unknown, databaseUrl: string) => {
   setDatabaseUrl(databaseUrl);
   resetPrismaClient();
 });
+ipcMain.handle('update:get-version', () => {
+  return getAppVersion();
+});
+ipcMain.handle('update:get-status', () => {
+  return getUpdateStatus();
+});
+ipcMain.handle('update:check', () => {
+  checkForUpdates();
+});
+ipcMain.handle('update:quit-and-install', () => {
+  quitAndInstall();
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -117,7 +136,10 @@ const createWindow = (): void => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  initAutoUpdater();
+  createWindow();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

@@ -4,6 +4,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { DocumentDTO, SupplierId } from './shared/types';
 import { TagType } from './services/printer/constants';
 import { TagData } from './services/printer/types';
+import { UpdateStatus } from './services/update/updateService';
 
 const electronHandler = {
   mail: {
@@ -24,7 +25,9 @@ const electronHandler = {
     },
   },
   printer: {
-    getPrinterList(): Promise<{ deviceId: string; name: string; paperSizes: string[] }[]> {
+    getPrinterList(): Promise<
+      { deviceId: string; name: string; paperSizes: string[] }[]
+    > {
       return ipcRenderer.invoke('printer:get-printer-list');
     },
     printTags<T extends TagType>(
@@ -64,6 +67,32 @@ const electronHandler = {
     },
     setDatabaseUrl(databaseUrl: string): Promise<void> {
       return ipcRenderer.invoke('config:set-database-url', databaseUrl);
+    },
+  },
+  update: {
+    getVersion(): Promise<string> {
+      return ipcRenderer.invoke('update:get-version');
+    },
+    getStatus(): Promise<UpdateStatus> {
+      return ipcRenderer.invoke('update:get-status');
+    },
+    check(): Promise<void> {
+      return ipcRenderer.invoke('update:check');
+    },
+    quitAndInstall(): Promise<void> {
+      return ipcRenderer.invoke('update:quit-and-install');
+    },
+    onStatus(callback: (status: UpdateStatus) => void): () => void {
+      const listener = (
+        _event: Electron.IpcRendererEvent,
+        status: UpdateStatus,
+      ) => {
+        callback(status);
+      };
+      ipcRenderer.on('update:status', listener);
+      return () => {
+        ipcRenderer.removeListener('update:status', listener);
+      };
     },
   },
 };
