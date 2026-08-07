@@ -37,7 +37,7 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
     width: 80,
   },
   {
-    title: 'Цена',
+    title: 'Цена с НДС',
     key: 'price',
     width: 100,
     render: (_, record) =>
@@ -138,6 +138,17 @@ export default function DocumentPage() {
                 </span>
               </div>
             </div>
+            <Button
+              type="primary"
+              icon={<PrinterOutlined />}
+              onClick={() =>
+                navigate(
+                  `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
+                )
+              }
+            >
+              Печать ценников
+            </Button>
           </div>
           <div style={{ height: '100%', overflow: 'auto' }}>
             <Table
@@ -151,26 +162,6 @@ export default function DocumentPage() {
           </div>
         </>
       )}
-
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginTop: 20,
-        }}
-      >
-        <Button
-          type="primary"
-          icon={<PrinterOutlined />}
-          onClick={() =>
-            navigate(
-              `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
-            )
-          }
-        >
-          Печать ценников
-        </Button>
-      </div>
     </div>
   );
 }
