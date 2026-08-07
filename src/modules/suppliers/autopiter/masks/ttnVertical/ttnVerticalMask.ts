@@ -7,7 +7,8 @@ import {
 import { MIME_TYPE_EXCEL } from '../../../../../shared/constants';
 import { read } from 'xlsx';
 import { getProductRowData, getRowType, getTotalRowData } from './utils';
-import { getRowsInJSON, parseInvoiceDate } from '../utils';
+import { parseInvoiceDate } from '../utils';
+import { getRowsInJSON } from '../../../../../shared/utils/common';
 
 export const ttnVerticalMask = {
   type: DocumentType.TTN,

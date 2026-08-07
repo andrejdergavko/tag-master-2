@@ -12,7 +12,7 @@ export default function AppSidebar() {
   const menuItems = suppliers.map((supplier) => ({
     key: supplier.id,
     icon: supplier.icon ? (
-      <img src={supplier.icon} alt="" width={26} height={26} />
+      <img src={supplier.icon.src} style={supplier.icon.style} />
     ) : undefined,
     label: (
       <Link to={`${Routes.documents}/${supplier.id}`}>{supplier.name}</Link>

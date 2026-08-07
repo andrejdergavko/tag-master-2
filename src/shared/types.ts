@@ -10,8 +10,8 @@ export type DocumentDTO = {
   id?: string;
   type: DocumentType;
   supplierId: SupplierId;
-  number?: string;
-  date?: Date;
+  number?: string | null;
+  date?: Date | null;
   totalSumWithVat: number;
   items: DocumentItemDTO[];
   source?: string;
@@ -33,11 +33,15 @@ export type SupplierDTO = {
   code: string;
   email: string;
   masks: IMask[];
-  icon: string;
+  icon: {
+    src: string;
+    style?: React.CSSProperties;
+  };
 };
 
 export enum SupplierId {
   AUTOPITER = 'autopiter',
+  ARKLOW = 'arklow',
 }
 
 export type IMask = {

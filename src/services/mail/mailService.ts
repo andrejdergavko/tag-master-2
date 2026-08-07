@@ -46,7 +46,7 @@ export const fetchNewInvoicesBySupplier = async (
     });
 
     const sentSince =
-      latestMail?.sentAt ?? new Date(Date.now() - 20 * 24 * 60 * 60 * 1000);
+      latestMail?.sentAt ?? new Date(Date.now() - 20 * 24 * 60 * 60 * 1000); // 20 days ago
 
     const documents: DocumentDTO[] = [];
 

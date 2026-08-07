@@ -13,12 +13,3 @@ export const parseInvoiceDate = (rawDate: unknown): Date | null => {
 
   return isValid(parsedDate) ? parsedDate : null;
 };
-
-export const getRowsInJSON = (
-  sheet: WorkSheet,
-): (string | number | null)[][] => {
-  return utils.sheet_to_json(sheet, {
-    header: 1,
-    defval: null,
-  });
-};

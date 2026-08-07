@@ -4,21 +4,29 @@ import {
   DocumentItemDTO,
   SupplierId,
 } from '../../../../../shared/types';
-import { MIME_TYPE_EXCEL } from '../../../../../shared/constants';
-import { read } from 'xlsx';
-import { getProductRowData, getRowType, getTotalRowData } from './utils';
-import { parseInvoiceDate } from '../utils';
+import { MIME_TYPE_EXCEL_OLD } from '../../../../../shared/constants';
+import { read, set_cptable } from 'xlsx';
+// @ts-expect-error SheetJS codepage tables ship without typings
+import * as cptable from 'xlsx/dist/cpexcel.full.mjs';
+import {
+  getProductRowData,
+  getRowType,
+  getTotalRowData,
+  parseTTNDateAndNumber,
+} from './utils';
 import { getRowsInJSON } from '../../../../../shared/utils/common';
 
-export const tnVerticalMask = {
-  type: DocumentType.TN,
-  description: 'ТН вертикальная',
+set_cptable(cptable);
+
+export const ttnVerticalMask = {
+  type: DocumentType.TTN,
+  description: 'ТТН вертикальная',
   isMatch: (attachment: MessageStructureObject) => {
-    if (attachment.type !== MIME_TYPE_EXCEL) {
+    if (attachment.type !== MIME_TYPE_EXCEL_OLD) {
       return false;
     }
 
-    if (!attachment.parameters?.name?.includes('ТН-2 Реализация')) {
+    if (!attachment.parameters?.name?.includes('attached')) {
       return false;
     }
 
@@ -26,7 +34,7 @@ export const tnVerticalMask = {
   },
 
   extractData: (buffer: Buffer) => {
-    const workbook = read(buffer, { type: 'buffer' });
+    const workbook = read(buffer, { type: 'buffer', codepage: 1251 });
     const sheet = workbook.Sheets[workbook.SheetNames[0] ?? ''];
 
     if (!sheet) throw new Error('Sheet not found');
@@ -53,10 +61,13 @@ export const tnVerticalMask = {
       }
     });
 
+    const parsed = parseTTNDateAndNumber(sheet.A2?.v);
+
     return {
-      type: DocumentType.TN,
-      date: parseInvoiceDate(sheet.M23?.v) ?? new Date(),
-      supplierId: SupplierId.AUTOPITER,
+      type: DocumentType.TTN,
+      date: parsed?.date ?? new Date(),
+      number: parsed?.number,
+      supplierId: SupplierId.ARKLOW,
       totalSumWithVat: totalSumWithVat,
       items: invoiceItems,
     };
