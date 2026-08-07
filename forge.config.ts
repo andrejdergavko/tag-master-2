@@ -9,6 +9,7 @@ import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
 
 import { mainConfig } from './webpack.main.config';
+import { preloadConfig } from './webpack.preload.config';
 import { rendererConfig } from './webpack.renderer.config';
 
 const config: ForgeConfig = {
@@ -26,6 +27,14 @@ const config: ForgeConfig = {
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
       mainConfig,
+      // liveReload steals updates from React Fast Refresh; keep hot only.
+      devServer: {
+        hot: true,
+        liveReload: false,
+      },
+      // Allow webpack HMR websocket in development (default CSP has no connect-src).
+      devContentSecurityPolicy:
+        "default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:; connect-src 'self' ws: wss: http: https:",
       renderer: {
         config: rendererConfig,
         entryPoints: [
@@ -35,6 +44,7 @@ const config: ForgeConfig = {
             name: 'main_window',
             preload: {
               js: './src/preload.ts',
+              config: preloadConfig,
             },
           },
         ],
