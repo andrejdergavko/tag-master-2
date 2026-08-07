@@ -146,6 +146,7 @@ export const getSupplierDocuments = async (
       },
     },
     include: { items: true },
+    orderBy: { date: 'desc' },
   });
 
   return documents.map((document) => toDocumentDTO(document));

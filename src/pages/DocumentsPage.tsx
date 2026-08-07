@@ -16,13 +16,13 @@ const columns: ColumnsType<DocumentDTO> = [
     render: (date?: Date) => (date ? formatDate(date) : '—'),
   },
   {
-    title: 'Тип',
+    title: 'Тип документа',
     dataIndex: 'type',
     key: 'type',
     render: (type: DocumentType) => <DocumentTypeTag type={type} />,
   },
   {
-    title: 'Номер',
+    title: 'Номер документа',
     dataIndex: 'number',
     key: 'number',
   },

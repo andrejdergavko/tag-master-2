@@ -44,3 +44,16 @@ export const getTotalRowData = (row: unknown[]) => {
     totalSumWithVat: row[23],
   };
 };
+
+export const parseTTNNumber = (
+  rawCell: unknown,
+): { number: string } | null => {
+  if (typeof rawCell !== 'string') return null;
+
+  const numberMatch = rawCell.match(/\d{6,}/);
+  if (!numberMatch) return null;
+
+  return {
+    number: numberMatch[0],
+  };
+};

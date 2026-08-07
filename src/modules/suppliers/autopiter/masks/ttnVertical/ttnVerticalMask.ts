@@ -1,12 +1,17 @@
 import { MessageStructureObject } from 'imapflow/lib/imap-flow';
+import { read } from 'xlsx';
 import {
   DocumentType,
   DocumentItemDTO,
   SupplierId,
 } from '../../../../../shared/types';
 import { MIME_TYPE_EXCEL } from '../../../../../shared/constants';
-import { read } from 'xlsx';
-import { getProductRowData, getRowType, getTotalRowData } from './utils';
+import {
+  getProductRowData,
+  getRowType,
+  getTotalRowData,
+  parseTTNNumber,
+} from './utils';
 import { parseInvoiceDate } from '../utils';
 import { getRowsInJSON } from '../../../../../shared/utils/common';
 
@@ -59,6 +64,7 @@ export const ttnVerticalMask = {
       supplierId: SupplierId.AUTOPITER,
       totalSumWithVat: totalSumWithVat,
       items: invoiceItems,
+      number: parseTTNNumber(sheet.B89?.v)?.number,
     };
   },
 };
