@@ -47,77 +47,85 @@ export const fetchNewInvoicesBySupplier = async (
 
     const sentSince =
       latestMail?.sentAt ?? new Date(Date.now() - 20 * 24 * 60 * 60 * 1000);
-    lock = await client.getMailboxLock('INBOX');
-
-    const messages = (
-      await client.fetchAll(
-        { from: supplier.email, sentSince },
-        { envelope: true, uid: true, bodyStructure: true },
-      )
-    ).filter(
-      (message) =>
-        message.envelope?.date &&
-        new Date(message.envelope.date).getTime() > sentSince.getTime(),
-    );
 
     const documents: DocumentDTO[] = [];
 
-    for (const message of messages) {
-      if (!message.bodyStructure || !message.envelope?.date) continue;
+    for (const mailboxPath of ['INBOX', 'Спам']) {
+      lock = await client.getMailboxLock(mailboxPath);
 
-      const messageSentAt = new Date(message.envelope.date);
-      const mailId = String(message.uid);
-      const messageAttachments = getMessageAttachmentsFlat(message);
-      let persistedMailId: string | undefined;
+      try {
+        const messages = (
+          await client.fetchAll(
+            { from: supplier.email, sentSince },
+            { envelope: true, uid: true, bodyStructure: true },
+          )
+        ).filter(
+          (message) =>
+            message.envelope?.date &&
+            new Date(message.envelope.date).getTime() > sentSince.getTime(),
+        );
 
-      if (!messageAttachments.length) continue;
+        for (const message of messages) {
+          if (!message.bodyStructure || !message.envelope?.date) continue;
 
-      for (const attachment of messageAttachments) {
-        for (const mask of supplier.masks) {
-          if (mask.isMatch(attachment)) {
-            const buffer = await getAttachmentBuffer(
-              client,
-              message.uid,
-              attachment,
-            );
+          const messageSentAt = new Date(message.envelope.date);
+          const mailId = String(message.id);
+          const messageAttachments = getMessageAttachmentsFlat(message);
+          let persistedMailId: string | undefined;
 
-            if (!buffer) continue;
+          if (!messageAttachments.length) continue;
 
-            if (!persistedMailId) {
-              await prisma.mail.upsert({
-                where: { id: mailId },
-                create: {
-                  id: mailId,
-                  supplierId: supplier.id,
-                  sentAt: messageSentAt,
-                },
-                update: {
-                  supplierId: supplier.id,
-                  sentAt: messageSentAt,
-                },
-              });
-              persistedMailId = mailId;
+          for (const attachment of messageAttachments) {
+            for (const mask of supplier.masks) {
+              if (mask.isMatch(attachment)) {
+                const buffer = await getAttachmentBuffer(
+                  client,
+                  message.uid,
+                  attachment,
+                );
+
+                if (!buffer) continue;
+
+                if (!persistedMailId) {
+                  await prisma.mail.upsert({
+                    where: { id: mailId },
+                    create: {
+                      id: mailId,
+                      supplierId: supplier.id,
+                      sentAt: messageSentAt,
+                    },
+                    update: {
+                      supplierId: supplier.id,
+                      sentAt: messageSentAt,
+                    },
+                  });
+                  persistedMailId = mailId;
+                }
+
+                const data = mask.extractData(buffer);
+                await prisma.document.create({
+                  data: {
+                    type: data.type,
+                    supplierId: data.supplierId,
+                    number: data.number,
+                    date: data.date,
+                    totalSumWithVat: data.totalSumWithVat,
+                    mailId: persistedMailId,
+                    items: {
+                      create: data.items,
+                    },
+                    // source: data.source ?? attachment.parameters?.name ?? null,
+                  },
+                });
+                documents.push(data);
+                break;
+              }
             }
-
-            const data = mask.extractData(buffer);
-            await prisma.document.create({
-              data: {
-                type: data.type,
-                supplierId: data.supplierId,
-                number: data.number,
-                date: data.date,
-                totalSumWithVat: data.totalSumWithVat,
-                mailId: persistedMailId,
-                items: {
-                  create: data.items,
-                },
-                // source: data.source ?? attachment.parameters?.name ?? null,
-              },
-            });
-            documents.push(data);
-            break;
           }
         }
+      } finally {
+        lock.release();
+        lock = undefined;
       }
     }
 

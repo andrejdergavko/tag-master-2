@@ -9,7 +9,7 @@ const { Sider } = Layout;
 export default function AppSidebar() {
   const { supplierId } = useParams();
   const [collapsed, setCollapsed] = useState(false);
-  const menuItems = [...suppliers, ...suppliers].map((supplier) => ({
+  const menuItems = suppliers.map((supplier) => ({
     key: supplier.id,
     icon: supplier.icon ? (
       <img src={supplier.icon} alt="" width={26} height={26} />
