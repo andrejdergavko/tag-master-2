@@ -156,7 +156,7 @@ export default function DocumentPage() {
         style={{
           display: 'flex',
           justifyContent: 'flex-end',
-          marginTop: 16,
+          marginTop: 20,
         }}
       >
         <Button

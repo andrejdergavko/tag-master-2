@@ -50,7 +50,13 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button
           type="primary"
@@ -62,20 +68,22 @@ export default function DocumentsPage() {
         </Button>
       </div>
 
-      <Table
-        rowKey={(record) => record.id ?? `${record.type}-${record.number}`}
-        columns={columns}
-        size="small"
-        dataSource={documents}
-        pagination={false}
-        onRow={(record) => ({
-          onClick: () => {
-            if (!record.id || !supplierId) return;
-            navigate(`${Routes.documents}/${supplierId}/${record.id}`);
-          },
-          style: { cursor: record.id ? 'pointer' : undefined },
-        })}
-      />
+      <div style={{ height: '100%', overflow: 'auto' }}>
+        <Table
+          rowKey={(record) => record.id ?? `${record.type}-${record.number}`}
+          columns={columns}
+          size="small"
+          dataSource={documents}
+          pagination={false}
+          onRow={(record) => ({
+            onClick: () => {
+              if (!record.id || !supplierId) return;
+              navigate(`${Routes.documents}/${supplierId}/${record.id}`);
+            },
+            style: { cursor: record.id ? 'pointer' : undefined },
+          })}
+        />
+      </div>
     </div>
   );
 }

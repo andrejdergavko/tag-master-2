@@ -78,7 +78,13 @@ export default function PrintTagsPage() {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <div
         style={{
           display: 'flex',
@@ -102,55 +108,57 @@ export default function PrintTagsPage() {
       {isLoading && <Spin />}
       {!isLoading && !document && <div>Документ не найден</div>}
       {!isLoading && document && (
-        <Table
-          rowKey="key"
-          size="small"
-          rowSelection={rowSelection}
-          onRow={(record) => ({
-            onClick: (event) => handleRowClick(record, event),
-            style: { cursor: 'pointer' },
-          })}
-          columns={[
-            {
-              title: 'Артикул',
-              key: 'sku',
-              width: 120,
-              render: (_, record) => record.data.sku,
-            },
-            {
-              title: 'Наименование',
-              key: 'name',
-              render: (_, record) => record.data.name,
-            },
-            {
-              title: 'Ед.',
-              key: 'units',
-              width: 60,
-              render: (_, record) => record.data.units,
-            },
-            {
-              title: 'Кол-во этикеток',
-              key: 'quantity',
-              width: 140,
-              render: (_, record) => (
-                <InputNumber
-                  min={1}
-                  value={quantities[record.key]}
-                  onClick={(event) => event.stopPropagation()}
-                  onChange={(value) => {
-                    if (value == null) return;
-                    setQuantities((prev) => ({
-                      ...prev,
-                      [record.key]: value,
-                    }));
-                  }}
-                />
-              ),
-            },
-          ]}
-          dataSource={rows}
-          pagination={false}
-        />
+        <div style={{ height: '100%', overflow: 'auto' }}>
+          <Table
+            rowKey="key"
+            size="small"
+            rowSelection={rowSelection}
+            onRow={(record) => ({
+              onClick: (event) => handleRowClick(record, event),
+              style: { cursor: 'pointer' },
+            })}
+            columns={[
+              {
+                title: 'Артикул',
+                key: 'sku',
+                width: 120,
+                render: (_, record) => record.data.sku,
+              },
+              {
+                title: 'Наименование',
+                key: 'name',
+                render: (_, record) => record.data.name,
+              },
+              {
+                title: 'Ед.',
+                key: 'units',
+                width: 60,
+                render: (_, record) => record.data.units,
+              },
+              {
+                title: 'Кол-во этикеток',
+                key: 'quantity',
+                width: 140,
+                render: (_, record) => (
+                  <InputNumber
+                    min={1}
+                    value={quantities[record.key]}
+                    onClick={(event) => event.stopPropagation()}
+                    onChange={(value) => {
+                      if (value == null) return;
+                      setQuantities((prev) => ({
+                        ...prev,
+                        [record.key]: value,
+                      }));
+                    }}
+                  />
+                ),
+              },
+            ]}
+            dataSource={rows}
+            pagination={false}
+          />
+        </div>
       )}
     </div>
   );
