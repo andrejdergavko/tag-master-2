@@ -5,6 +5,10 @@ import {
   getSupplierDocuments,
   getDocument,
 } from './services/mail/mailService';
+import {
+  getDefaultPrinter,
+  setDefaultPrinter,
+} from './services/config/configService';
 import { getPrinterList, printTags } from './services/printer/printerService';
 import { TagType } from './services/printer/constants';
 import { TagData } from './services/printer/types';
@@ -48,6 +52,15 @@ ipcMain.handle(
     printerName?: string,
   ) => {
     return printTags(tagType, data, printerName);
+  },
+);
+ipcMain.handle('config:get-default-printer', () => {
+  return getDefaultPrinter();
+});
+ipcMain.handle(
+  'config:set-default-printer',
+  (_: unknown, printerName: string | null) => {
+    setDefaultPrinter(printerName);
   },
 );
 

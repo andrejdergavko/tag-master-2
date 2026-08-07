@@ -1,5 +1,6 @@
 import { print } from '@maxxuxx/node-printer';
 import { getPrinters } from 'pdf-to-printer';
+import { getDefaultPrinter } from '../config/configService';
 import { DEFAULT_PRINTER_NAME, TagType } from './constants';
 import get4x25TagLayout from './tagLayouts/4x2.5tag';
 import { TagData } from './types';
@@ -18,8 +19,11 @@ const getTagLayout = <T extends TagType>(tagType: T, data: TagData<T>) => {
 export const printTags = async <T extends TagType>(
   tagType: T,
   data: TagData<T>[],
-  printerName: string = DEFAULT_PRINTER_NAME,
+  printerName?: string,
 ) => {
+  const resolvedPrinterName =
+    printerName ?? getDefaultPrinter() ?? DEFAULT_PRINTER_NAME;
+
   const tagLayouts = data.map((item) => getTagLayout(tagType, item)).join('');
 
   const encoded = new TextEncoder().encode(tagLayouts);
@@ -27,7 +31,7 @@ export const printTags = async <T extends TagType>(
   await print(
     {
       type: 'winspool',
-      printerName,
+      printerName: resolvedPrinterName,
       documentName: 'ZPL Label',
     },
     encoded,

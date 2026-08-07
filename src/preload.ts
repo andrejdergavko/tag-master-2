@@ -24,7 +24,7 @@ const electronHandler = {
     },
   },
   printer: {
-    getPrinterList() {
+    getPrinterList(): Promise<{ deviceId: string; name: string; paperSizes: string[] }[]> {
       return ipcRenderer.invoke('printer:get-printer-list');
     },
     printTags<T extends TagType>(
@@ -38,6 +38,14 @@ const electronHandler = {
         data,
         printerName,
       );
+    },
+  },
+  config: {
+    getDefaultPrinter(): Promise<string | null> {
+      return ipcRenderer.invoke('config:get-default-printer');
+    },
+    setDefaultPrinter(printerName: string | null): Promise<void> {
+      return ipcRenderer.invoke('config:set-default-printer', printerName);
     },
   },
 };
