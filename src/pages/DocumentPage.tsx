@@ -91,30 +91,20 @@ export default function DocumentPage() {
   return (
     <div
       style={{
-        // height: '100%',
-        height: '700px',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
       }}
     >
-      {/* <div>
+      <div>
         <BackButton />
-      </div> */}
+      </div>
 
       {isLoading && <Spin />}
       {!isLoading && !document && <div>Документ не найден</div>}
       {!isLoading && document && (
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-            // overflow: 'hidden',
-          }}
-        >
-          {/* <div
+        <>
+          <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -148,8 +138,8 @@ export default function DocumentPage() {
                 </span>
               </div>
             </div>
-          </div> */}
-          <div style={{ flex: 1, overflow: 'auto', height: '100%' }}>
+          </div>
+          <div style={{ height: '100%', overflow: 'auto' }}>
             <Table
               rowKey={(record) => String(record.id)}
               size="small"
@@ -157,30 +147,30 @@ export default function DocumentPage() {
               dataSource={document.items}
               pagination={false}
               rowHoverable={false}
-              // scroll={{ y: 'calc(100vh - 360px)' }}
             />
           </div>
-          {/* <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginTop: 16,
-            }}
-          >
-            <Button
-              type="primary"
-              icon={<PrinterOutlined />}
-              onClick={() =>
-                navigate(
-                  `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
-                )
-              }
-            >
-              Печать ценников
-            </Button>
-          </div> */}
-        </div>
+        </>
       )}
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginTop: 16,
+        }}
+      >
+        <Button
+          type="primary"
+          icon={<PrinterOutlined />}
+          onClick={() =>
+            navigate(
+              `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
+            )
+          }
+        >
+          Печать ценников
+        </Button>
+      </div>
     </div>
   );
 }
