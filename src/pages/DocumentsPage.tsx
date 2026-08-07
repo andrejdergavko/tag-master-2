@@ -50,14 +50,17 @@ export default function DocumentsPage() {
 
   return (
     <div>
-      <Button
-        type="primary"
-        loading={isFetching}
-        onClick={() => fetchDocuments()}
-        style={{ marginBottom: 16 }}
-      >
-        Загрузить с почты
-      </Button>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          type="primary"
+          loading={isFetching}
+          onClick={() => fetchDocuments()}
+          style={{ marginBottom: 16 }}
+        >
+          Обновить
+        </Button>
+      </div>
+
       <Table
         rowKey={(record) => record.id ?? `${record.type}-${record.number}`}
         columns={columns}

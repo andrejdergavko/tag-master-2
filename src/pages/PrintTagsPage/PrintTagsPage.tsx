@@ -1,4 +1,4 @@
-import { useEffect, useState, type Key } from 'react';
+import { useEffect, useState, type Key, type MouseEvent } from 'react';
 import { Button, InputNumber, Spin, Table } from 'antd';
 import type { TableProps } from 'antd/es/table';
 import { useParams } from 'react-router-dom';
@@ -42,6 +42,23 @@ export default function PrintTagsPage() {
     onChange: (keys) => setSelectedRowKeys(keys),
   };
 
+  const toggleRowSelection = (key: Key) => {
+    setSelectedRowKeys((prev) =>
+      prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key],
+    );
+  };
+
+  const handleRowClick = (record: PrintRow, event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (
+      target.closest('.ant-checkbox-wrapper') ||
+      target.closest('.ant-input-number')
+    ) {
+      return;
+    }
+    toggleRowSelection(record.key);
+  };
+
   const handlePrint = () => {
     const itemsToPrint = rows
       .filter((row) => selectedRowKeys.includes(row.key) && row.data.id != null)
@@ -62,61 +79,78 @@ export default function PrintTagsPage() {
 
   return (
     <div>
-      <BackButton />
-      {isLoading && <Spin />}
-      {!isLoading && !document && <div>Документ не найден</div>}
-      {!isLoading && document && (
-        <>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexShrink: 0,
+        }}
+      >
+        <BackButton />
+        {!isLoading && document && (
           <Button
             type="primary"
             style={{ marginBottom: 16 }}
+            disabled={selectedRowKeys.length === 0}
             onClick={handlePrint}
           >
             Распечатать
           </Button>
-
-          <Table
-            rowKey="key"
-            size="small"
-            rowSelection={rowSelection}
-            columns={[
-              {
-                title: 'Артикул',
-                key: 'sku',
-                render: (_, record) => record.data.sku,
-              },
-              {
-                title: 'Наименование',
-                key: 'name',
-                render: (_, record) => record.data.name,
-              },
-              {
-                title: 'Ед.',
-                key: 'units',
-                render: (_, record) => record.data.units,
-              },
-              {
-                title: 'Кол-во этикеток',
-                key: 'quantity',
-                render: (_, record) => (
-                  <InputNumber
-                    min={1}
-                    value={quantities[record.key]}
-                    onChange={(value) => {
-                      if (value == null) return;
-                      setQuantities((prev) => ({
-                        ...prev,
-                        [record.key]: value,
-                      }));
-                    }}
-                  />
-                ),
-              },
-            ]}
-            dataSource={rows}
-            pagination={false}
-          />
-        </>
+        )}
+      </div>
+      {isLoading && <Spin />}
+      {!isLoading && !document && <div>Документ не найден</div>}
+      {!isLoading && document && (
+        <Table
+          rowKey="key"
+          size="small"
+          rowSelection={rowSelection}
+          onRow={(record) => ({
+            onClick: (event) => handleRowClick(record, event),
+            style: { cursor: 'pointer' },
+          })}
+          columns={[
+            {
+              title: 'Артикул',
+              key: 'sku',
+              width: 120,
+              render: (_, record) => record.data.sku,
+            },
+            {
+              title: 'Наименование',
+              key: 'name',
+              render: (_, record) => record.data.name,
+            },
+            {
+              title: 'Ед.',
+              key: 'units',
+              width: 60,
+              render: (_, record) => record.data.units,
+            },
+            {
+              title: 'Кол-во этикеток',
+              key: 'quantity',
+              width: 140,
+              render: (_, record) => (
+                <InputNumber
+                  min={1}
+                  value={quantities[record.key]}
+                  onClick={(event) => event.stopPropagation()}
+                  onChange={(value) => {
+                    if (value == null) return;
+                    setQuantities((prev) => ({
+                      ...prev,
+                      [record.key]: value,
+                    }));
+                  }}
+                />
+              ),
+            },
+          ]}
+          dataSource={rows}
+          pagination={false}
+        />
       )}
     </div>
   );

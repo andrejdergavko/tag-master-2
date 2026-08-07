@@ -17,6 +17,7 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
     title: 'Артикул',
     dataIndex: 'sku',
     key: 'sku',
+    width: 100,
   },
   {
     title: 'Наименование',
@@ -27,20 +28,31 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
     title: 'Ед.',
     dataIndex: 'units',
     key: 'units',
+    width: 60,
   },
   {
     title: 'Кол-во',
     dataIndex: 'quantity',
     key: 'quantity',
+    width: 80,
+  },
+  {
+    title: 'Цена',
+    key: 'price',
+    width: 100,
+    render: (_, record) =>
+      record.quantity ? record.sumWithVat / record.quantity : '—',
   },
   {
     title: 'Сумма с НДС',
     dataIndex: 'sumWithVat',
     key: 'sumWithVat',
+    width: 100,
   },
   {
     title: '',
     key: 'actions',
+    width: 60,
     render: (_, record) => (
       <Button
         type="text"
@@ -135,6 +147,7 @@ export default function DocumentPage() {
             dataSource={document.items}
             pagination={false}
             rowHoverable={false}
+            scroll={{ y: 'calc(100vh - 360px)' }}
           />
         </>
       )}
