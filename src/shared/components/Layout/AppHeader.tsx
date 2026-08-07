@@ -34,7 +34,9 @@ export default function AppHeader() {
         items={headerMenuItems}
         style={{ flex: 1, minWidth: 0 }}
       /> */}
-      <SettingOutlined className="app-header-settings" />
+      <Link to={Routes.settings}>
+        <SettingOutlined className="app-header-settings" />
+      </Link>
     </Header>
   );
 }

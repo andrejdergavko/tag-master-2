@@ -5,6 +5,7 @@ import { Routes as RoutesEnum } from './shared/constants/routes';
 import DocumentsPage from './pages/DocumentsPage';
 import DocumentPage from './pages/DocumentPage';
 import PrintTagsPage from './pages/PrintTagsPage/PrintTagsPage';
+import SettingsPage from './pages/SettingsPage';
 import AppLayout from './shared/components/Layout/AppLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConfigProvider } from 'antd/es';
@@ -31,6 +32,7 @@ const App = () => {
                 path={`${RoutesEnum.documents}/:supplierId`}
                 element={<DocumentsPage />}
               />
+              <Route path={RoutesEnum.settings} element={<SettingsPage />} />
             </Route>
           </Routes>
         </Router>
