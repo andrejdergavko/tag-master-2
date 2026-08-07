@@ -70,7 +70,7 @@ const config: ForgeConfig = {
         name: 'tag-master-app',
       },
       prerelease: false,
-      // draft: true, // сначала draft — проверишь, потом вручную Publish на GitHub
+      draft: false, // сначала draft — проверишь, потом вручную Publish на GitHub
     }),
   ],
 };
