@@ -1,5 +1,6 @@
-import { Button, Spin, Table } from 'antd';
+import { Button, Spin, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { isToday } from 'date-fns/isToday';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentDTO, DocumentType, SupplierId } from '../shared/types';
 import { useGetDocuments } from '../modules/documents/hooks/useGetDocuments';
@@ -13,7 +14,20 @@ const columns: ColumnsType<DocumentDTO> = [
     title: 'Дата',
     dataIndex: 'date',
     key: 'date',
-    render: (date?: Date) => (date ? formatDate(date) : '—'),
+    render: (date?: Date) => {
+      if (!date) return '—';
+
+      return (
+        <span>
+          {formatDate(date)}
+          {isToday(new Date(date)) && (
+            <Tag bordered={false} color="cyan" style={{ marginLeft: 8 }}>
+              сегодня
+            </Tag>
+          )}
+        </span>
+      );
+    },
   },
   {
     title: 'Тип документа',
