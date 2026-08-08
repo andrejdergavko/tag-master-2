@@ -17,7 +17,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/andrejdergavko/tag-master-app.git"
+    "url": "https://github.com/andrejdergavko/tag-master-2.git"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.11.2",

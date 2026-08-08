@@ -8,7 +8,7 @@ export type UpdateStatus =
   | { type: 'downloaded' }
   | { type: 'error'; message: string };
 
-const REPO = 'andrejdergavko/tag-master-app';
+const REPO = 'andrejdergavko/tag-master-2';
 
 let currentStatus: UpdateStatus = { type: 'idle' };
 let listenersAttached = false;

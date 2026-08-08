@@ -141,7 +141,7 @@ const config: ForgeConfig = {
     new PublisherGithub({
       repository: {
         owner: 'andrejdergavko',
-        name: 'tag-master-app',
+        name: 'tag-master-2',
       },
       prerelease: false,
       draft: false, // сначала draft — проверишь, потом вручную Publish на GitHub
