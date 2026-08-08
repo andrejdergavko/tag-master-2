@@ -18,17 +18,26 @@ import { preloadConfig } from './webpack.preload.config';
 import { rendererConfig } from './webpack.renderer.config';
 
 const NATIVE_PRINTER_PACKAGE = '@maxxuxx/node-printer';
+const APP_ICON = path.resolve(__dirname, 'src/assets/rascenka-icon');
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    // Windows uses .ico, macOS .icns, Linux .png — extension is chosen by platform.
+    icon: APP_ICON,
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      setupIcon: `${APP_ICON}.ico`,
+    }),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),
-    new MakerDeb({}),
+    new MakerDeb({
+      options: {
+        icon: `${APP_ICON}.png`,
+      },
+    }),
   ],
   hooks: {
     // Webpack leaves @maxxuxx/node-printer external; install only that package

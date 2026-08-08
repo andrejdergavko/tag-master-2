@@ -95,6 +95,32 @@ const electronHandler = {
       };
     },
   },
+  window: {
+    minimize(): Promise<void> {
+      return ipcRenderer.invoke('window:minimize');
+    },
+    maximize(): Promise<void> {
+      return ipcRenderer.invoke('window:maximize');
+    },
+    close(): Promise<void> {
+      return ipcRenderer.invoke('window:close');
+    },
+    isMaximized(): Promise<boolean> {
+      return ipcRenderer.invoke('window:is-maximized');
+    },
+    onMaximizedChange(callback: (isMaximized: boolean) => void): () => void {
+      const listener = (
+        _event: Electron.IpcRendererEvent,
+        isMaximized: boolean,
+      ) => {
+        callback(isMaximized);
+      };
+      ipcRenderer.on('window:maximized-changed', listener);
+      return () => {
+        ipcRenderer.removeListener('window:maximized-changed', listener);
+      };
+    },
+  },
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

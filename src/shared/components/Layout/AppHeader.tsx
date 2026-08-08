@@ -1,42 +1,60 @@
-import { Layout, Menu } from 'antd';
-import { SettingOutlined } from '@ant-design/icons';
-import { Link, useLocation } from 'react-router-dom';
-import { Routes, pageNames, Pages } from '../../constants/routes';
-import suppliers from '../../../modules/suppliers';
+import { useEffect, useState } from 'react';
+import { Layout } from 'antd';
+import {
+  BorderOutlined,
+  CloseOutlined,
+  MinusOutlined,
+  SettingOutlined,
+  SwitcherOutlined,
+} from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import { Routes } from '../../constants/routes';
 import './AppHeader.scss';
 
 const { Header } = Layout;
 
-const headerMenuItems = [
-  {
-    key: 'documents',
-    label: (
-      <Link to={`${Routes.documents}/${suppliers[0]?.id}`}>
-        {pageNames[Pages.documents]}
-      </Link>
-    ),
-  },
-];
-
 export default function AppHeader() {
-  const { pathname } = useLocation();
-  const selectedKey = pathname.startsWith(Routes.documents)
-    ? 'documents'
-    : undefined;
+  const [isMaximized, setIsMaximized] = useState(false);
+
+  useEffect(() => {
+    void window.electron.window.isMaximized().then(setIsMaximized);
+    return window.electron.window.onMaximizedChange(setIsMaximized);
+  }, []);
 
   return (
     <Header className="app-header">
       <div className="app-header-logo">Расценка</div>
-      {/* <Menu
-        theme="dark"
-        mode="horizontal"
-        selectedKeys={selectedKey ? [selectedKey] : []}
-        items={headerMenuItems}
-        style={{ flex: 1, minWidth: 0 }}
-      /> */}
-      <Link to={Routes.settings}>
-        <SettingOutlined className="app-header-settings" />
-      </Link>
+      <div className="app-header-actions">
+        <Link to={Routes.settings} className="app-header-no-drag">
+          <SettingOutlined className="app-header-settings" />
+        </Link>
+        <div className="app-header-window-controls">
+          <button
+            type="button"
+            className="app-header-window-button"
+            aria-label="Свернуть"
+            onClick={() => void window.electron.window.minimize()}
+          >
+            <MinusOutlined />
+          </button>
+          <button
+            type="button"
+            className="app-header-window-button"
+            aria-label={isMaximized ? 'Восстановить' : 'Развернуть'}
+            onClick={() => void window.electron.window.maximize()}
+          >
+            {isMaximized ? <SwitcherOutlined /> : <BorderOutlined />}
+          </button>
+          <button
+            type="button"
+            className="app-header-window-button app-header-window-button-close"
+            aria-label="Закрыть"
+            onClick={() => void window.electron.window.close()}
+          >
+            <CloseOutlined />
+          </button>
+        </div>
+      </div>
     </Header>
   );
 }

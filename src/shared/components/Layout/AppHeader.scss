@@ -2,6 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  -webkit-app-region: drag;
+  user-select: none;
 }
 
 .app-header-logo {
@@ -9,8 +11,50 @@
   font-size: 22px;
 }
 
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.app-header-no-drag,
+.app-header-window-controls,
+.app-header-window-button {
+  -webkit-app-region: no-drag;
+}
+
 .app-header-settings {
   color: #fff;
   font-size: 18px;
   cursor: pointer;
+  padding: 8px;
+}
+
+.app-header-window-controls {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  margin-right: -30px;
+}
+
+.app-header-window-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.app-header-window-button-close:hover {
+  background: #e81123;
 }
