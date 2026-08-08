@@ -17,7 +17,7 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
     title: 'Артикул',
     dataIndex: 'sku',
     key: 'sku',
-    width: 100,
+    width: 170,
   },
   {
     title: 'Наименование',
