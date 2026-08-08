@@ -1,3 +1,7 @@
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+
 import type { ForgeConfig } from '@electron-forge/shared-types';
 import { MakerSquirrel } from '@electron-forge/maker-squirrel';
 import { MakerZIP } from '@electron-forge/maker-zip';
@@ -13,6 +17,8 @@ import { mainConfig } from './webpack.main.config';
 import { preloadConfig } from './webpack.preload.config';
 import { rendererConfig } from './webpack.renderer.config';
 
+const NATIVE_PRINTER_PACKAGE = '@maxxuxx/node-printer';
+
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
@@ -24,6 +30,65 @@ const config: ForgeConfig = {
     new MakerRpm({}),
     new MakerDeb({}),
   ],
+  hooks: {
+    // Webpack leaves @maxxuxx/node-printer external; install only that package
+    // (and its transitive deps like safer-buffer) after prune.
+    packageAfterPrune: async (_forgeConfig, buildPath) => {
+      const packageJsonPath = path.join(buildPath, 'package.json');
+      const originalPackageJson = await fs.promises.readFile(
+        packageJsonPath,
+        'utf8',
+      );
+      const rootPackageJson = JSON.parse(
+        await fs.promises.readFile(
+          path.join(process.cwd(), 'package.json'),
+          'utf8',
+        ),
+      ) as { dependencies: Record<string, string> };
+
+      const packageJson = JSON.parse(originalPackageJson) as {
+        dependencies?: Record<string, string>;
+        devDependencies?: Record<string, string>;
+      };
+      packageJson.dependencies = {
+        [NATIVE_PRINTER_PACKAGE]:
+          rootPackageJson.dependencies[NATIVE_PRINTER_PACKAGE],
+      };
+      packageJson.devDependencies = {};
+      await fs.promises.writeFile(
+        packageJsonPath,
+        JSON.stringify(packageJson, null, 2),
+      );
+
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const child = spawn(
+            'npm',
+            ['install', '--omit=dev', '--no-package-lock'],
+            {
+              cwd: buildPath,
+              shell: true,
+              stdio: 'inherit',
+            },
+          );
+          child.on('error', reject);
+          child.on('close', (code) => {
+            if (code === 0) {
+              resolve();
+              return;
+            }
+            reject(
+              new Error(
+                `Failed to install ${NATIVE_PRINTER_PACKAGE} into packaged app (exit ${code})`,
+              ),
+            );
+          });
+        });
+      } finally {
+        await fs.promises.writeFile(packageJsonPath, originalPackageJson);
+      }
+    },
+  },
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({

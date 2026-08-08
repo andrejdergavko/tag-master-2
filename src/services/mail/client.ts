@@ -3,7 +3,7 @@ import { getEmail, getImapPassword } from '../config/configService';
 
 export function createImapClient(): ImapFlow {
   return new ImapFlow({
-    host: process.env.HOST || '',
+    host: process.env.HOST || 'imap.mail.ru',
     port: Number(process.env.PORT) || 993,
     secure: true,
     auth: {

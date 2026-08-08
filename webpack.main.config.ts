@@ -17,4 +17,8 @@ export const mainConfig: Configuration = {
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
+  // Keep as a real package so winspool prebuilds resolve at runtime.
+  externals: {
+    '@maxxuxx/node-printer': 'commonjs2 @maxxuxx/node-printer',
+  },
 };
