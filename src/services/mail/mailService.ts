@@ -148,7 +148,11 @@ export const getSupplierDocuments = async (
         is: { id: supplierId },
       },
     },
-    include: { items: true },
+    include: {
+      items: {
+        orderBy: { id: 'asc' },
+      },
+    },
     orderBy: { date: 'desc' },
   });
 
@@ -164,8 +168,26 @@ export const getDocument = async (
       id: documentId,
       supplierId,
     },
-    include: { items: true },
+    include: {
+      items: {
+        orderBy: { id: 'asc' },
+      },
+    },
   });
 
   return document ? toDocumentDTO(document) : null;
+};
+
+export const markDocumentItemsPrinted = async (ids: number[]) => {
+  if (ids.length === 0) return;
+
+  await getPrisma().documentItem.updateMany({
+    where: {
+      id: { in: ids },
+      printedAt: null,
+    },
+    data: {
+      printedAt: new Date(),
+    },
+  });
 };

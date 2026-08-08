@@ -76,6 +76,7 @@ export const toDocumentDTO = (
     quantity: item.quantity,
     sumWithVat: Number(item.sumWithVat),
     description: item.description,
+    printedAt: item.printedAt ?? null,
   })),
   source: document.source ?? undefined,
 });

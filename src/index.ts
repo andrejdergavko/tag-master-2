@@ -4,6 +4,7 @@ import {
   fetchNewInvoicesBySupplier,
   getSupplierDocuments,
   getDocument,
+  markDocumentItemsPrinted,
 } from './services/mail/mailService';
 import {
   getDefaultPrinter,
@@ -66,7 +67,17 @@ ipcMain.handle(
     data: TagData<T>[],
     printerName?: string,
   ) => {
-    return printTags(tagType, data, printerName);
+    await printTags(tagType, data, printerName);
+
+    const itemIds = [
+      ...new Set(
+        data
+          .map((item) => Number(item.number))
+          .filter((id) => Number.isInteger(id) && id > 0),
+      ),
+    ];
+
+    await markDocumentItemsPrinted(itemIds);
   },
 );
 ipcMain.handle('config:get-default-printer', () => {

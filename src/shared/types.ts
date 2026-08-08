@@ -25,6 +25,7 @@ export type DocumentItemDTO = {
   quantity: number;
   sumWithVat: number;
   description: string;
+  printedAt?: Date | null;
 };
 
 export type SupplierDTO = {

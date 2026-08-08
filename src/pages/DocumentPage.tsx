@@ -1,9 +1,13 @@
-import { PrinterOutlined } from '@ant-design/icons';
-import { Button, Spin, Table } from 'antd';
+import { CheckCircleOutlined, PrinterOutlined } from '@ant-design/icons';
+import { Button, Spin, Table, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentItemDTO, SupplierId } from '../shared/types';
-import { useGetDocument } from '../modules/documents/hooks/useGetDocument';
+import {
+  DOCUMENT_QUERY_KEY,
+  useGetDocument,
+} from '../modules/documents/hooks/useGetDocument';
 import { Routes } from '../shared/constants/routes';
 import BackButton from '../shared/components/BackButton';
 import DocumentTypeTag from '../shared/components/DocumentTypeTag';
@@ -12,7 +16,9 @@ import { TagType } from '../services/printer/constants';
 import suppliers from '../modules/suppliers';
 import './DocumentPage.scss';
 
-const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
+const getItemColumns = (
+  onPrint: (record: DocumentItemDTO) => void,
+): ColumnsType<DocumentItemDTO> => [
   {
     title: 'Артикул',
     dataIndex: 'sku',
@@ -52,23 +58,24 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
   },
   {
     title: '',
+    key: 'printed',
+    width: 40,
+    render: (_, record) =>
+      record.printedAt ? (
+        <Tooltip title={`Напечатан ${formatDate(record.printedAt)}`}>
+          <CheckCircleOutlined style={{ color: '#52c41a' }} />
+        </Tooltip>
+      ) : null,
+  },
+  {
+    title: '',
     key: 'actions',
     width: 60,
     render: (_, record) => (
       <Button
         type="text"
         icon={<PrinterOutlined />}
-        onClick={() => {
-          window.electron.printer.printTags(TagType.FOUR_X_TWO_FIVE, [
-            {
-              sku: record.sku,
-              name: record.name,
-              supplierCode,
-              price: record.sumWithVat,
-              number: String(record.id),
-            },
-          ]);
-        }}
+        onClick={() => onPrint(record)}
       />
     ),
   },
@@ -76,6 +83,7 @@ const getItemColumns = (supplierCode: string): ColumnsType<DocumentItemDTO> => [
 
 export default function DocumentPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { supplierId, documentId } = useParams<{
     supplierId: string;
     documentId: string;
@@ -87,6 +95,22 @@ export default function DocumentPage() {
   );
 
   const supplier = suppliers.find((item) => item.id === supplierId);
+
+  const handlePrintItem = async (record: DocumentItemDTO) => {
+    await window.electron.printer.printTags(TagType.FOUR_X_TWO_FIVE, [
+      {
+        sku: record.sku,
+        name: record.name,
+        supplierCode: supplier?.code ?? '',
+        price: record.sumWithVat,
+        number: String(record.id),
+      },
+    ]);
+
+    await queryClient.invalidateQueries({
+      queryKey: [DOCUMENT_QUERY_KEY, supplierId, documentId],
+    });
+  };
 
   return (
     <div
@@ -154,7 +178,7 @@ export default function DocumentPage() {
             <Table
               rowKey={(record) => String(record.id)}
               size="small"
-              columns={getItemColumns(supplier?.code ?? '')}
+              columns={getItemColumns(handlePrintItem)}
               dataSource={document.items}
               pagination={false}
               rowHoverable={false}

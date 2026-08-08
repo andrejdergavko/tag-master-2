@@ -1,9 +1,13 @@
 import { useEffect, useState, type Key, type MouseEvent } from 'react';
 import { Button, InputNumber, Spin, Table } from 'antd';
 import type { TableProps } from 'antd/es/table';
+import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { SupplierId } from '../../shared/types';
-import { useGetDocument } from '../../modules/documents/hooks/useGetDocument';
+import {
+  DOCUMENT_QUERY_KEY,
+  useGetDocument,
+} from '../../modules/documents/hooks/useGetDocument';
 import BackButton from '../../shared/components/BackButton';
 import { TagType } from '../../services/printer/constants';
 import suppliers from '../../modules/suppliers';
@@ -11,6 +15,7 @@ import { PrintRow } from './types';
 
 export default function PrintTagsPage() {
   const { supplierId, documentId } = useParams();
+  const queryClient = useQueryClient();
 
   const { data: document, isLoading } = useGetDocument(
     supplierId as SupplierId | undefined,
@@ -59,7 +64,7 @@ export default function PrintTagsPage() {
     toggleRowSelection(record.key);
   };
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     const itemsToPrint = rows
       .filter((row) => selectedRowKeys.includes(row.key) && row.data.id != null)
       .flatMap((row) => {
@@ -73,8 +78,14 @@ export default function PrintTagsPage() {
         }));
       });
 
-    // @ts-ignore
-    window.electron.printer.printTags(TagType.FOUR_X_TWO_FIVE, itemsToPrint);
+    await window.electron.printer.printTags(
+      TagType.FOUR_X_TWO_FIVE,
+      itemsToPrint,
+    );
+
+    await queryClient.invalidateQueries({
+      queryKey: [DOCUMENT_QUERY_KEY, supplierId, documentId],
+    });
   };
 
   return (
