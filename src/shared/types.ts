@@ -42,6 +42,7 @@ export type SupplierDTO = {
 export enum SupplierId {
   AUTOPITER = 'autopiter',
   ARKLOW = 'arklow',
+  FORSAGE = 'forsage',
 }
 
 export type IMask = {
