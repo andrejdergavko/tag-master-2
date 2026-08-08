@@ -102,7 +102,10 @@ export const fetchNewInvoicesBySupplier = async (
                   persistedMailId = mailId;
                 }
 
-                const data = mask.extractData(buffer);
+                const data = mask.extractData(
+                  buffer,
+                  attachment.parameters?.name,
+                );
                 await getPrisma().document.create({
                   data: {
                     type: data.type,

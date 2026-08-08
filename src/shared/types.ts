@@ -40,6 +40,7 @@ export type SupplierDTO = {
 };
 
 export enum SupplierId {
+  ALMIK = 'almik',
   AUTOPITER = 'autopiter',
   ARKLOW = 'arklow',
   FORSAGE = 'forsage',
@@ -49,5 +50,5 @@ export type IMask = {
   type: DocumentType;
   description: string;
   isMatch: (attachment: MessageStructureObject) => boolean;
-  extractData: (buffer: Buffer) => DocumentDTO;
+  extractData: (buffer: Buffer, attachmentName?: string) => DocumentDTO;
 };
