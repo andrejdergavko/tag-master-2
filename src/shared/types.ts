@@ -28,6 +28,34 @@ export type DocumentItemDTO = {
   printedAt?: Date | null;
 };
 
+export type GetDocumentItemsParams = {
+  search?: string;
+  supplierId?: SupplierId;
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  page: number;
+  pageSize: number;
+};
+
+export type DocumentItemRowDTO = {
+  id: number;
+  sku?: string;
+  name: string;
+  units: string;
+  quantity: number;
+  sumWithVat: number;
+  documentId: string;
+  documentNumber?: string | null;
+  documentDate?: string | null;
+  supplierId: SupplierId;
+  supplierName: string;
+};
+
+export type GetDocumentItemsResult = {
+  items: DocumentItemRowDTO[];
+  total: number;
+};
+
 export type SupplierDTO = {
   id: SupplierId;
   name: string;

@@ -1,7 +1,12 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 import { contextBridge, ipcRenderer } from 'electron';
-import { DocumentDTO, SupplierId } from './shared/types';
+import {
+  DocumentDTO,
+  GetDocumentItemsParams,
+  GetDocumentItemsResult,
+  SupplierId,
+} from './shared/types';
 import { TagType } from './services/printer/constants';
 import { TagData } from './services/printer/types';
 import { UpdateStatus } from './services/update/updateService';
@@ -22,6 +27,13 @@ const electronHandler = {
       documentId: string,
     ): Promise<DocumentDTO | null> {
       return ipcRenderer.invoke('mail:get-document', supplierId, documentId);
+    },
+  },
+  documentItems: {
+    getDocumentItems(
+      params: GetDocumentItemsParams,
+    ): Promise<GetDocumentItemsResult> {
+      return ipcRenderer.invoke('documentItems:get-document-items', params);
     },
   },
   printer: {
