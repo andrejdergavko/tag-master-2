@@ -9,12 +9,16 @@ export default function PlainLayout() {
   } = theme.useToken();
 
   return (
-    <Layout style={{ padding: '24px' }}>
+    <Layout style={{ padding: '24px', height: '100%', overflow: 'hidden' }}>
       <Content
         style={{
           padding: 24,
           margin: 0,
-          minHeight: 280,
+          height: '100%',
+          minHeight: 0,
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
           background: colorBgContainer,
           borderRadius: borderRadiusLG,
         }}

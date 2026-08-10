@@ -30,7 +30,7 @@ export type DocumentItemDTO = {
 
 export type GetDocumentItemsParams = {
   search?: string;
-  supplierId?: SupplierId;
+  supplierIds?: SupplierId[];
   dateFrom?: string | null;
   dateTo?: string | null;
   page: number;
@@ -44,6 +44,7 @@ export type DocumentItemRowDTO = {
   units: string;
   quantity: number;
   sumWithVat: number;
+  printedAt?: string | null;
   documentId: string;
   documentNumber?: string | null;
   documentDate?: string | null;

@@ -1,7 +1,9 @@
 import type { ColumnsType } from 'antd/es/table';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import { endOfDay, startOfDay, subMonths, subWeeks } from 'date-fns';
+import { endOfDay, startOfDay, subMonths, subWeeks, subYears } from 'date-fns';
+import { CheckCircleOutlined, FileTextOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import { DocumentItemRowDTO } from '../../shared/types';
 import { formatDate } from '../../shared/utils/date';
 import { DatePreset } from './types';
@@ -13,6 +15,8 @@ export const datePresetOptions: { label: string; value: DatePreset }[] = [
   { label: '2 недели', value: '2w' },
   { label: '3 недели', value: '3w' },
   { label: 'Месяц', value: '1m' },
+  { label: '3 месяца', value: '3m' },
+  { label: 'Год', value: '1y' },
   { label: 'Всё время', value: 'all' },
 ];
 
@@ -31,12 +35,18 @@ export const getRangeForPreset = (
       return [dayjs(startOfDay(subWeeks(now, 3))), to];
     case '1m':
       return [dayjs(startOfDay(subMonths(now, 1))), to];
+    case '3m':
+      return [dayjs(startOfDay(subMonths(now, 3))), to];
+    case '1y':
+      return [dayjs(startOfDay(subYears(now, 1))), to];
     case 'all':
       return null;
   }
 };
 
-export const columns: ColumnsType<DocumentItemRowDTO> = [
+export const getColumns = (
+  onOpenDocument: (record: DocumentItemRowDTO) => void,
+): ColumnsType<DocumentItemRowDTO> => [
   {
     title: 'Артикул',
     dataIndex: 'sku',
@@ -53,13 +63,13 @@ export const columns: ColumnsType<DocumentItemRowDTO> = [
     title: 'Поставщик',
     dataIndex: 'supplierName',
     key: 'supplierName',
-    width: 140,
+    width: 100,
   },
   {
     title: 'Кол-во',
     dataIndex: 'quantity',
     key: 'quantity',
-    width: 80,
+    width: 70,
   },
   {
     title: 'Ед.',
@@ -68,7 +78,7 @@ export const columns: ColumnsType<DocumentItemRowDTO> = [
     width: 60,
   },
   {
-    title: 'Дата накладной',
+    title: 'Дата документа',
     dataIndex: 'documentDate',
     key: 'documentDate',
     width: 130,
@@ -78,14 +88,46 @@ export const columns: ColumnsType<DocumentItemRowDTO> = [
     title: '№ документа',
     dataIndex: 'documentNumber',
     key: 'documentNumber',
-    width: 130,
+    width: 110,
     render: (number?: string | null) => number || '—',
   },
   {
     title: 'Цена с НДС',
     key: 'price',
-    width: 100,
+    width: 95,
     render: (_, record) =>
       record.quantity ? (record.sumWithVat / record.quantity).toFixed(2) : '—',
+  },
+  {
+    title: 'Сумма с НДС',
+    dataIndex: 'sumWithVat',
+    key: 'sumWithVat',
+    width: 95,
+    render: (sumWithVat: number) => sumWithVat.toFixed(2),
+  },
+  {
+    title: '',
+    key: 'printed',
+    width: 40,
+    render: (_, record) =>
+      record.printedAt ? (
+        <Tooltip title={`Напечатан ${formatDate(record.printedAt)}`}>
+          <CheckCircleOutlined style={{ color: '#52c41a' }} />
+        </Tooltip>
+      ) : null,
+  },
+  {
+    title: '',
+    key: 'document',
+    width: 48,
+    render: (_, record) => (
+      <FileTextOutlined
+        style={{ color: '#4374e6', cursor: 'pointer' }}
+        onClick={(event) => {
+          event.stopPropagation();
+          onOpenDocument(record);
+        }}
+      />
+    ),
   },
 ];

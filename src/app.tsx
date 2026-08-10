@@ -18,7 +18,12 @@ import PlainLayout from './shared/components/Layout/PlainLayout';
 import suppliers from './modules/suppliers';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConfigProvider } from 'antd/es';
+import ruRU from 'antd/locale/ru_RU';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
 import { theme } from './shared/theme';
+
+dayjs.locale('ru');
 
 const defaultDocumentsPath = `${RoutesEnum.documents}/${suppliers[0].id}`;
 
@@ -27,7 +32,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ConfigProvider theme={theme}>
+      <ConfigProvider theme={theme} locale={ruRU}>
         <Router>
           <Routes>
             <Route element={<AppLayout />} path={RoutesEnum.root}>

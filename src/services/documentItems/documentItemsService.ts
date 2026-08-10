@@ -15,8 +15,8 @@ export const getDocumentItems = async (
 
   const documentFilter: Prisma.DocumentWhereInput = {};
 
-  if (params.supplierId) {
-    documentFilter.supplierId = params.supplierId;
+  if (params.supplierIds?.length) {
+    documentFilter.supplierId = { in: params.supplierIds };
   }
 
   if (params.dateFrom || params.dateTo) {
@@ -69,6 +69,7 @@ export const getDocumentItems = async (
       units: item.units,
       quantity: item.quantity,
       sumWithVat: Number(item.sumWithVat),
+      printedAt: item.printedAt?.toISOString() ?? null,
       documentId: item.documentId,
       documentNumber: item.document.number,
       documentDate: item.document.date?.toISOString() ?? null,
