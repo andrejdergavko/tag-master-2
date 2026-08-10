@@ -1,4 +1,4 @@
-import { Button, Spin, Table, Tag } from 'antd';
+import { Button, Space, Spin, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { isToday } from 'date-fns/isToday';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { useGetDocuments } from '../modules/documents/hooks/useGetDocuments';
 import { useFetchDocuments } from '../modules/documents/hooks/useАetchDocuments';
 import { Routes } from '../shared/constants/routes';
 import DocumentTypeTag from '../shared/components/DocumentTypeTag';
+import UpdateAllButton from '../shared/components/UpdateAllButton';
 import { formatDate } from '../shared/utils/date';
 
 const columns: ColumnsType<DocumentDTO> = [
@@ -71,15 +72,23 @@ export default function DocumentsPage() {
         flexDirection: 'column',
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button
-          type="primary"
-          loading={isFetching}
-          onClick={() => fetchDocuments()}
-          style={{ marginBottom: 16 }}
-        >
-          Обновить
-        </Button>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: 16,
+        }}
+      >
+        <Space>
+          <UpdateAllButton />
+          <Button
+            type="primary"
+            loading={isFetching}
+            onClick={() => fetchDocuments()}
+          >
+            Обновить
+          </Button>
+        </Space>
       </div>
 
       <div style={{ height: '100%', overflow: 'auto' }}>
