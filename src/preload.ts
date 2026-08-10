@@ -28,6 +28,12 @@ const electronHandler = {
     ): Promise<DocumentDTO | null> {
       return ipcRenderer.invoke('mail:get-document', supplierId, documentId);
     },
+    downloadDocument(
+      supplierId: SupplierId,
+      documentId: string,
+    ): Promise<{ saved: boolean; filePath?: string }> {
+      return ipcRenderer.invoke('mail:download-document', supplierId, documentId);
+    },
   },
   documentItems: {
     getDocumentItems(

@@ -44,11 +44,11 @@ export const getMessageAttachmentsFlat = (message: FetchMessageObject) =>
 export const getAttachmentBuffer = async (
   client: ImapFlow,
   messageUid: number,
-  attachment: MessageStructureObject,
+  part: string,
 ) => {
   const downloadedAttachment = await client.download(
     String(messageUid),
-    attachment.part ?? '',
+    part,
     { uid: true },
   );
 

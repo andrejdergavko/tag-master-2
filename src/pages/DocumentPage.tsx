@@ -10,6 +10,7 @@ import {
 } from '../modules/documents/hooks/useGetDocument';
 import { Routes } from '../shared/constants/routes';
 import BackButton from '../shared/components/BackButton';
+import DownloadDocumentButton from '../shared/components/DownloadDocumentButton';
 import DocumentTypeTag from '../shared/components/DocumentTypeTag';
 import { formatDate } from '../shared/utils/date';
 import { TagType } from '../services/printer/constants';
@@ -162,17 +163,23 @@ export default function DocumentPage() {
                 </span>
               </div>
             </div>
-            <Button
-              type="primary"
-              icon={<PrinterOutlined />}
-              onClick={() =>
-                navigate(
-                  `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
-                )
-              }
-            >
-              Печать ценников
-            </Button>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <DownloadDocumentButton
+                supplierId={supplierId as SupplierId}
+                documentId={documentId as string}
+              />
+              <Button
+                type="primary"
+                icon={<PrinterOutlined />}
+                onClick={() =>
+                  navigate(
+                    `${Routes.documents}/${supplierId}/${documentId}/print-tags`,
+                  )
+                }
+              >
+                Печать ценников
+              </Button>
+            </div>
           </div>
           <div style={{ height: '100%', overflow: 'auto' }}>
             <Table

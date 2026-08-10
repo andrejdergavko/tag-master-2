@@ -1,9 +1,11 @@
-import { app, BrowserWindow, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu } from 'electron';
+import { writeFile } from 'node:fs/promises';
 import dotenv from 'dotenv';
 import {
   fetchNewInvoicesBySupplier,
   getSupplierDocuments,
   getDocument,
+  downloadDocumentAttachment,
   markDocumentItemsPrinted,
 } from './services/mail/mailService';
 import {
@@ -55,6 +57,26 @@ ipcMain.handle(
   'mail:get-document',
   async (_, supplierId: SupplierId, documentId: string) => {
     return getDocument(supplierId, documentId);
+  },
+);
+ipcMain.handle(
+  'mail:download-document',
+  async (event, supplierId: SupplierId, documentId: string) => {
+    const { buffer, filename } = await downloadDocumentAttachment(
+      supplierId,
+      documentId,
+    );
+    const window = BrowserWindow.fromWebContents(event.sender);
+    const result = await dialog.showSaveDialog(window ?? undefined, {
+      defaultPath: filename,
+    });
+
+    if (result.canceled || !result.filePath) {
+      return { saved: false };
+    }
+
+    await writeFile(result.filePath, buffer);
+    return { saved: true, filePath: result.filePath };
   },
 );
 ipcMain.handle(

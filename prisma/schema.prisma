@@ -35,6 +35,7 @@ model Document {
   totalSumWithVat Decimal
   items           DocumentItem[]
   source          String?
+  attachmentPart  String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -43,11 +44,14 @@ model Document {
 }
 
 model Mail {
-  id          String     @id
-  supplierId  String
-  supplier    Supplier   @relation(fields: [supplierId], references: [id])
-  sentAt      DateTime   @db.Timestamptz(3)
-  documents   Document[]
+  id           String     @id
+  supplierId   String
+  supplier     Supplier   @relation(fields: [supplierId], references: [id])
+  sentAt       DateTime   @db.Timestamptz(3)
+  mailboxPath  String
+  uid          Int
+  messageId    String
+  documents    Document[]
 }
 
 model DocumentItem {

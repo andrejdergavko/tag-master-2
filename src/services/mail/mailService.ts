@@ -81,7 +81,7 @@ export const fetchNewInvoicesBySupplier = async (
                 const buffer = await getAttachmentBuffer(
                   client,
                   message.uid,
-                  attachment,
+                  attachment.part ?? '',
                 );
 
                 if (!buffer) continue;
@@ -93,10 +93,16 @@ export const fetchNewInvoicesBySupplier = async (
                       id: mailId,
                       supplierId: supplier.id,
                       sentAt: messageSentAt,
+                      mailboxPath,
+                      uid: message.uid,
+                      messageId: message.envelope?.messageId ?? mailId,
                     },
                     update: {
                       supplierId: supplier.id,
                       sentAt: messageSentAt,
+                      mailboxPath,
+                      uid: message.uid,
+                      messageId: message.envelope?.messageId ?? mailId,
                     },
                   });
                   persistedMailId = mailId;
@@ -114,10 +120,11 @@ export const fetchNewInvoicesBySupplier = async (
                     date: data.date,
                     totalSumWithVat: data.totalSumWithVat,
                     mailId: persistedMailId,
+                    source: data.source ?? attachment.parameters?.name ?? null,
+                    attachmentPart: attachment.part!,
                     items: {
                       create: data.items,
                     },
-                    // source: data.source ?? attachment.parameters?.name ?? null,
                   },
                 });
                 documents.push(data);
@@ -176,6 +183,55 @@ export const getDocument = async (
   });
 
   return document ? toDocumentDTO(document) : null;
+};
+
+export const downloadDocumentAttachment = async (
+  supplierId: SupplierId,
+  documentId: string,
+): Promise<{ buffer: Buffer; filename: string }> => {
+  const document = await getPrisma().document.findFirst({
+    where: {
+      id: documentId,
+      supplierId,
+    },
+    include: {
+      mail: true,
+    },
+  });
+
+  if (!document) {
+    throw new Error('Документ не найден');
+  }
+
+  if (!document.mail) {
+    throw new Error('Исходный файл недоступен');
+  }
+
+  const client = createImapClient();
+  let lock: MailboxLockObject | undefined;
+  await client.connect();
+
+  try {
+    lock = await client.getMailboxLock(document.mail.mailboxPath);
+    const buffer = await getAttachmentBuffer(
+      client,
+      document.mail.uid,
+      document.attachmentPart,
+    );
+
+    if (!buffer) {
+      throw new Error('Не удалось скачать вложение');
+    }
+
+    const filename =
+      document.source ||
+      (document.number ? `document-${document.number}` : `document-${document.id}`);
+
+    return { buffer, filename };
+  } finally {
+    lock?.release();
+    await client.logout().catch((): undefined => undefined);
+  }
 };
 
 export const markDocumentItemsPrinted = async (ids: number[]) => {
