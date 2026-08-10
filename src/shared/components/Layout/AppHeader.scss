@@ -6,9 +6,47 @@
   user-select: none;
 }
 
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  min-width: 0;
+}
+
 .app-header-logo {
   color: #fff;
   font-size: 22px;
+}
+
+.app-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-header-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 16px;
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.app-header-nav-item-active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .app-header-actions {

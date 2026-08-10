@@ -7,11 +7,16 @@ import {
   SettingOutlined,
   SwitcherOutlined,
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import { Routes } from '../../constants/routes';
+import { Link, NavLink } from 'react-router-dom';
+import { pageNames, Pages, Routes } from '../../constants/routes';
 import './AppHeader.scss';
 
 const { Header } = Layout;
+
+const navItems = [
+  { to: Routes.documents, label: pageNames[Pages.documents], end: false },
+  { to: Routes.products, label: pageNames[Pages.products], end: true },
+] as const;
 
 export default function AppHeader() {
   const [isMaximized, setIsMaximized] = useState(false);
@@ -23,7 +28,25 @@ export default function AppHeader() {
 
   return (
     <Header className="app-header">
-      <div className="app-header-logo">Расценка</div>
+      <div className="app-header-left">
+        <div className="app-header-logo">Расценка</div>
+        <nav className="app-header-nav app-header-no-drag">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) =>
+                isActive
+                  ? 'app-header-nav-item app-header-nav-item-active'
+                  : 'app-header-nav-item'
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+      </div>
       <div className="app-header-actions">
         <Link to={Routes.settings} className="app-header-no-drag">
           <SettingOutlined className="app-header-settings" />
