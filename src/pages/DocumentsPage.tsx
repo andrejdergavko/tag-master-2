@@ -1,14 +1,14 @@
-import { Button, Space, Spin, Table, Tag } from 'antd';
+import { Spin, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { isToday } from 'date-fns/isToday';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentDTO, DocumentType, SupplierId } from '../shared/types';
 import { useGetDocuments } from '../modules/documents/hooks/useGetDocuments';
-import { useFetchDocuments } from '../modules/documents/hooks/useАetchDocuments';
 import { Routes } from '../shared/constants/routes';
 import DocumentTypeTag from '../shared/components/DocumentTypeTag';
 import UpdateAllButton from '../shared/components/UpdateAllButton';
 import { formatDate } from '../shared/utils/date';
+import suppliers from '../modules/suppliers';
 
 const columns: ColumnsType<DocumentDTO> = [
   {
@@ -31,6 +31,13 @@ const columns: ColumnsType<DocumentDTO> = [
     },
   },
   {
+    title: 'Поставщик',
+    dataIndex: 'supplierId',
+    key: 'supplierId',
+    render: (id: SupplierId) =>
+      suppliers.find((supplier) => supplier.id === id)?.name ?? id,
+  },
+  {
     title: 'Тип документа',
     dataIndex: 'type',
     key: 'type',
@@ -51,13 +58,10 @@ const columns: ColumnsType<DocumentDTO> = [
 
 export default function DocumentsPage() {
   const navigate = useNavigate();
-  const { supplierId } = useParams<{ supplierId: string }>();
+  const { supplierId } = useParams<{ supplierId?: string }>();
 
   const { data: documents, isLoading } = useGetDocuments(
-    supplierId as SupplierId,
-  );
-  const { mutate: fetchDocuments, isPending: isFetching } = useFetchDocuments(
-    supplierId as SupplierId,
+    supplierId as SupplierId | undefined,
   );
 
   if (isLoading) {
@@ -79,16 +83,7 @@ export default function DocumentsPage() {
           marginBottom: 16,
         }}
       >
-        <Space>
-          <UpdateAllButton />
-          <Button
-            type="primary"
-            loading={isFetching}
-            onClick={() => fetchDocuments()}
-          >
-            Обновить
-          </Button>
-        </Space>
+        <UpdateAllButton />
       </div>
 
       <div style={{ height: '100%', overflow: 'auto' }}>
@@ -100,8 +95,10 @@ export default function DocumentsPage() {
           pagination={false}
           onRow={(record) => ({
             onClick: () => {
-              if (!record.id || !supplierId) return;
-              navigate(`${Routes.documents}/${supplierId}/${record.id}`);
+              if (!record.id) return;
+              navigate(
+                `${Routes.documents}/${record.supplierId}/${record.id}`,
+              );
             },
             style: { cursor: record.id ? 'pointer' : undefined },
           })}

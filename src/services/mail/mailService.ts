@@ -146,15 +146,21 @@ export const fetchNewInvoicesBySupplier = async (
   }
 };
 
-export const getSupplierDocuments = async (
-  supplierId: SupplierId,
+export const getDocuments = async (
+  supplierIds?: SupplierId | SupplierId[],
 ): Promise<DocumentDTO[]> => {
+  const ids = supplierIds
+    ? Array.isArray(supplierIds)
+      ? supplierIds
+      : [supplierIds]
+    : undefined;
+
   const documents = await getPrisma().document.findMany({
-    where: {
-      supplier: {
-        is: { id: supplierId },
-      },
-    },
+    where: ids?.length
+      ? {
+          supplierId: { in: ids },
+        }
+      : undefined,
     include: {
       items: {
         orderBy: { id: 'asc' },

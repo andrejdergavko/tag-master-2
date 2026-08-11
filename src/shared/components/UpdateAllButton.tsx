@@ -56,7 +56,7 @@ export default function UpdateAllButton() {
   return (
     <>
       <Button type="default" loading={isRunning} onClick={handleOpen}>
-        Обновить всё
+        Обновить
       </Button>
 
       <Modal

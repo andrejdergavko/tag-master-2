@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises';
 import dotenv from 'dotenv';
 import {
   fetchNewInvoicesBySupplier,
-  getSupplierDocuments,
+  getDocuments,
   getDocument,
   downloadDocumentAttachment,
   markDocumentItemsPrinted,
@@ -48,9 +48,9 @@ ipcMain.handle(
   },
 );
 ipcMain.handle(
-  'mail:get-supplier-documents',
-  async (_, supplierId: SupplierId) => {
-    return getSupplierDocuments(supplierId);
+  'mail:get-documents',
+  async (_, supplierIds?: SupplierId | SupplierId[]) => {
+    return getDocuments(supplierIds);
   },
 );
 ipcMain.handle(

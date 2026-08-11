@@ -39,9 +39,6 @@ export const useFetchAllDocuments = () => {
       try {
         // @ts-ignore
         await window.electron.mail.fetchNewInvoicesBySupplier(supplier.id);
-        await queryClient.invalidateQueries({
-          queryKey: [DOCUMENTS_QUERY_KEY, supplier.id],
-        });
         setStatuses((prev) => ({
           ...prev,
           [supplier.id]: { status: 'success' },
@@ -57,6 +54,10 @@ export const useFetchAllDocuments = () => {
         }));
       }
     }
+
+    await queryClient.invalidateQueries({
+      queryKey: [DOCUMENTS_QUERY_KEY],
+    });
 
     isRunningRef.current = false;
     setIsRunning(false);

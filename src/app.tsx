@@ -15,7 +15,6 @@ import SettingsPage from './pages/SettingsPage/SettingsPage';
 import AppLayout from './shared/components/Layout/AppLayout';
 import DocumentsLayout from './shared/components/Layout/DocumentsLayout';
 import PlainLayout from './shared/components/Layout/PlainLayout';
-import suppliers from './modules/suppliers';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConfigProvider } from 'antd/es';
 import ruRU from 'antd/locale/ru_RU';
@@ -24,8 +23,6 @@ import 'dayjs/locale/ru';
 import { theme } from './shared/theme';
 
 dayjs.locale('ru');
-
-const defaultDocumentsPath = `${RoutesEnum.documents}/${suppliers[0].id}`;
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -38,16 +35,13 @@ const App = () => {
             <Route element={<AppLayout />} path={RoutesEnum.root}>
               <Route
                 index
-                element={<Navigate to={defaultDocumentsPath} replace />}
+                element={<Navigate to={RoutesEnum.documents} replace />}
               />
               <Route
                 path={RoutesEnum.documents}
                 element={<DocumentsLayout />}
               >
-                <Route
-                  index
-                  element={<Navigate to={defaultDocumentsPath} replace />}
-                />
+                <Route index element={<DocumentsPage />} />
                 <Route
                   path=":supplierId/:documentId/print-tags"
                   element={<PrintTagsPage />}

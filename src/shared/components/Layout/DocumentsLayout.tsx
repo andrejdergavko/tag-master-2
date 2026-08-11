@@ -35,6 +35,7 @@ export default function DocumentsLayout() {
 
   const breadcrumbItems = [
     { title: pageNames[Pages.documents] },
+    ...(!supplierId ? [{ title: 'Все' }] : []),
     ...(supplier ? [{ title: supplier.name }] : []),
     ...(documentTitle ? [{ title: documentTitle }] : []),
   ];

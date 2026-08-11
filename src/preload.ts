@@ -19,8 +19,10 @@ const electronHandler = {
         supplierId,
       );
     },
-    getSupplierDocuments(supplierId: SupplierId): Promise<DocumentDTO[]> {
-      return ipcRenderer.invoke('mail:get-supplier-documents', supplierId);
+    getDocuments(
+      supplierIds?: SupplierId | SupplierId[],
+    ): Promise<DocumentDTO[]> {
+      return ipcRenderer.invoke('mail:get-documents', supplierIds);
     },
     getDocument(
       supplierId: SupplierId,
