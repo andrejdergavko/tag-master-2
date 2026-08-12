@@ -3,5 +3,6 @@ import arklow from './arklow';
 import forsage from './forsage';
 import almik from './almik';
 import motex from './motex';
+import shateM from './shate-m';
 
-export default [autopiter, arklow, forsage, almik, motex];
+export default [motex, shateM, autopiter, arklow, forsage, almik];
