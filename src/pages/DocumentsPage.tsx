@@ -15,6 +15,7 @@ const columns: ColumnsType<DocumentDTO> = [
     title: 'Дата',
     dataIndex: 'date',
     key: 'date',
+    minWidth: 150,
     render: (date?: Date) => {
       if (!date) return '—';
 
@@ -34,6 +35,7 @@ const columns: ColumnsType<DocumentDTO> = [
     title: 'Поставщик',
     dataIndex: 'supplierId',
     key: 'supplierId',
+    minWidth: 100,
     render: (id: SupplierId) =>
       suppliers.find((supplier) => supplier.id === id)?.name ?? id,
   },
@@ -41,17 +43,20 @@ const columns: ColumnsType<DocumentDTO> = [
     title: 'Тип документа',
     dataIndex: 'type',
     key: 'type',
+    minWidth: 100,
     render: (type: DocumentType) => <DocumentTypeTag type={type} />,
   },
   {
     title: 'Номер документа',
     dataIndex: 'number',
     key: 'number',
+    minWidth: 100,
   },
   {
     title: 'Сумма с НДС',
     dataIndex: 'totalSumWithVat',
     key: 'totalSumWithVat',
+    minWidth: 100,
     render: (totalSumWithVat: number) => totalSumWithVat.toFixed(2),
   },
 ];
@@ -96,9 +101,7 @@ export default function DocumentsPage() {
           onRow={(record) => ({
             onClick: () => {
               if (!record.id) return;
-              navigate(
-                `${Routes.documents}/${record.supplierId}/${record.id}`,
-              );
+              navigate(`${Routes.documents}/${record.supplierId}/${record.id}`);
             },
             style: { cursor: record.id ? 'pointer' : undefined },
           })}
