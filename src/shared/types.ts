@@ -70,6 +70,7 @@ export type SupplierDTO = {
 };
 
 export enum SupplierId {
+  MOTEX = 'motex',
   ALMIK = 'almik',
   AUTOPITER = 'autopiter',
   ARKLOW = 'arklow',
