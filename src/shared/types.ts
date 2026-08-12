@@ -76,6 +76,7 @@ export enum SupplierId {
   AUTOPITER = 'autopiter',
   ARKLOW = 'arklow',
   FORSAGE = 'forsage',
+  MONLIBON = 'monlibon',
 }
 
 export type IMask = {
