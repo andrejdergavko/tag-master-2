@@ -70,6 +70,7 @@ export type SupplierDTO = {
 };
 
 export enum SupplierId {
+  AMAZIS = 'amazis',
   SHATE_M = 'shate-m',
   MOTEX = 'motex',
   ALMIK = 'almik',

@@ -1,3 +1,4 @@
+import amazis from './amazis';
 import autopiter from './autopiter';
 import arklow from './arklow';
 import forsage from './forsage';
@@ -15,5 +16,6 @@ export default [
   forsage,
   almik,
   monlibon,
+  amazis,
   dias,
 ];
