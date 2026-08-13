@@ -77,6 +77,7 @@ export enum SupplierId {
   ARKLOW = 'arklow',
   FORSAGE = 'forsage',
   MONLIBON = 'monlibon',
+  DIAS = 'dias',
 }
 
 export type IMask = {

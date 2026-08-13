@@ -7,7 +7,7 @@ import {
   FileTextOutlined,
   PrinterOutlined,
 } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { DocumentItemRowDTO } from '../../shared/types';
 import { formatDate } from '../../shared/utils/date';
 import { DatePreset } from './types';
@@ -124,18 +124,24 @@ export const getColumns = (
   {
     title: '',
     key: 'actions',
-    width: 64,
+    width: 72,
     render: (_, record) => (
-      <span style={{ display: 'inline-flex', gap: 8 }}>
-        <PrinterOutlined
-          style={{ color: '#4374e6', cursor: 'pointer' }}
+      <span style={{ display: 'inline-flex' }}>
+        <Button
+          type="text"
+          size="small"
+          icon={<PrinterOutlined />}
+          style={{ color: '#4374e6' }}
           onClick={(event) => {
             event.stopPropagation();
             onPrint(record);
           }}
         />
-        <FileTextOutlined
-          style={{ color: '#4374e6', cursor: 'pointer' }}
+        <Button
+          type="text"
+          size="small"
+          icon={<FileTextOutlined />}
+          style={{ color: '#4374e6' }}
           onClick={(event) => {
             event.stopPropagation();
             onOpenDocument(record);
