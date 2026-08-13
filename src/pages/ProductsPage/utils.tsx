@@ -11,9 +11,9 @@ import { DatePreset } from './types';
 export const PAGE_SIZE = 100;
 
 export const datePresetOptions: { label: string; value: DatePreset }[] = [
+  { label: 'Сегодня', value: '1d' },
   { label: 'Неделя', value: '1w' },
   { label: '2 недели', value: '2w' },
-  { label: '3 недели', value: '3w' },
   { label: 'Месяц', value: '1m' },
   { label: '3 месяца', value: '3m' },
   { label: 'Год', value: '1y' },
@@ -27,12 +27,12 @@ export const getRangeForPreset = (
   const to = dayjs(endOfDay(now));
 
   switch (preset) {
+    case '1d':
+      return [dayjs(startOfDay(now)), to];
     case '1w':
       return [dayjs(startOfDay(subWeeks(now, 1))), to];
     case '2w':
       return [dayjs(startOfDay(subWeeks(now, 2))), to];
-    case '3w':
-      return [dayjs(startOfDay(subWeeks(now, 3))), to];
     case '1m':
       return [dayjs(startOfDay(subMonths(now, 1))), to];
     case '3m':
