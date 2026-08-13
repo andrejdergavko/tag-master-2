@@ -2,7 +2,11 @@ import type { ColumnsType } from 'antd/es/table';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { endOfDay, startOfDay, subMonths, subWeeks, subYears } from 'date-fns';
-import { CheckCircleOutlined, FileTextOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  FileTextOutlined,
+  PrinterOutlined,
+} from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { DocumentItemRowDTO } from '../../shared/types';
 import { formatDate } from '../../shared/utils/date';
@@ -46,6 +50,7 @@ export const getRangeForPreset = (
 
 export const getColumns = (
   onOpenDocument: (record: DocumentItemRowDTO) => void,
+  onPrint: (record: DocumentItemRowDTO) => void,
 ): ColumnsType<DocumentItemRowDTO> => [
   {
     title: 'Артикул',
@@ -118,16 +123,25 @@ export const getColumns = (
   },
   {
     title: '',
-    key: 'document',
-    width: 48,
+    key: 'actions',
+    width: 64,
     render: (_, record) => (
-      <FileTextOutlined
-        style={{ color: '#4374e6', cursor: 'pointer' }}
-        onClick={(event) => {
-          event.stopPropagation();
-          onOpenDocument(record);
-        }}
-      />
+      <span style={{ display: 'inline-flex', gap: 8 }}>
+        <PrinterOutlined
+          style={{ color: '#4374e6', cursor: 'pointer' }}
+          onClick={(event) => {
+            event.stopPropagation();
+            onPrint(record);
+          }}
+        />
+        <FileTextOutlined
+          style={{ color: '#4374e6', cursor: 'pointer' }}
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenDocument(record);
+          }}
+        />
+      </span>
     ),
   },
 ];

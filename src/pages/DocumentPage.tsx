@@ -1,13 +1,10 @@
 import { CheckCircleOutlined, PrinterOutlined } from '@ant-design/icons';
 import { Button, Spin, Table, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DocumentItemDTO, SupplierId } from '../shared/types';
-import {
-  DOCUMENT_QUERY_KEY,
-  useGetDocument,
-} from '../modules/documents/hooks/useGetDocument';
+import { useGetDocument } from '../modules/documents/hooks/useGetDocument';
+import { usePrintTags } from '../modules/printer/hooks/usePrintTags';
 import { Routes } from '../shared/constants/routes';
 import BackButton from '../shared/components/BackButton';
 import DownloadDocumentButton from '../shared/components/DownloadDocumentButton';
@@ -84,7 +81,7 @@ const getItemColumns = (
 
 export default function DocumentPage() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const { mutateAsync: printTags } = usePrintTags();
   const { supplierId, documentId } = useParams<{
     supplierId: string;
     documentId: string;
@@ -98,18 +95,17 @@ export default function DocumentPage() {
   const supplier = suppliers.find((item) => item.id === supplierId);
 
   const handlePrintItem = async (record: DocumentItemDTO) => {
-    await window.electron.printer.printTags(TagType.FOUR_X_TWO_FIVE, [
-      {
-        sku: record.sku,
-        name: record.name,
-        supplierCode: supplier?.code ?? '',
-        price: record.sumWithVat,
-        number: String(record.id),
-      },
-    ]);
-
-    await queryClient.invalidateQueries({
-      queryKey: [DOCUMENT_QUERY_KEY, supplierId, documentId],
+    await printTags({
+      tagType: TagType.FOUR_X_TWO_FIVE,
+      data: [
+        {
+          sku: record.sku,
+          name: record.name,
+          supplierCode: supplier?.code ?? '',
+          price: record.sumWithVat,
+          number: String(record.id),
+        },
+      ],
     });
   };
 

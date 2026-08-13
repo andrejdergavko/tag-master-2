@@ -1,13 +1,10 @@
 import { useEffect, useState, type Key, type MouseEvent } from 'react';
 import { Button, InputNumber, Spin, Table } from 'antd';
 import type { TableProps } from 'antd/es/table';
-import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { SupplierId } from '../../shared/types';
-import {
-  DOCUMENT_QUERY_KEY,
-  useGetDocument,
-} from '../../modules/documents/hooks/useGetDocument';
+import { useGetDocument } from '../../modules/documents/hooks/useGetDocument';
+import { usePrintTags } from '../../modules/printer/hooks/usePrintTags';
 import BackButton from '../../shared/components/BackButton';
 import { TagType } from '../../services/printer/constants';
 import suppliers from '../../modules/suppliers';
@@ -15,7 +12,7 @@ import { PrintRow } from './types';
 
 export default function PrintTagsPage() {
   const { supplierId, documentId } = useParams();
-  const queryClient = useQueryClient();
+  const { mutateAsync: printTags } = usePrintTags();
 
   const { data: document, isLoading } = useGetDocument(
     supplierId as SupplierId | undefined,
@@ -78,13 +75,9 @@ export default function PrintTagsPage() {
         }));
       });
 
-    await window.electron.printer.printTags(
-      TagType.FOUR_X_TWO_FIVE,
-      itemsToPrint,
-    );
-
-    await queryClient.invalidateQueries({
-      queryKey: [DOCUMENT_QUERY_KEY, supplierId, documentId],
+    await printTags({
+      tagType: TagType.FOUR_X_TWO_FIVE,
+      data: itemsToPrint,
     });
   };
 

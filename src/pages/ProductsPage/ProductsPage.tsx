@@ -5,8 +5,10 @@ import type { Dayjs } from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { DocumentItemRowDTO, SupplierId } from '../../shared/types';
 import { useGetDocumentItems } from '../../modules/documents/hooks/useGetDocumentItems';
+import { usePrintTags } from '../../modules/printer/hooks/usePrintTags';
 import suppliers from '../../modules/suppliers';
 import { Routes } from '../../shared/constants/routes';
+import { TagType } from '../../services/printer/constants';
 import { useProductsFiltersStore } from './filtersStore';
 import { DatePreset } from './types';
 import {
@@ -27,6 +29,7 @@ const toDateRange = (
 
 export default function ProductsPage() {
   const navigate = useNavigate();
+  const { mutateAsync: printTags } = usePrintTags();
   const searchInput = useProductsFiltersStore((state) => state.searchInput);
   const search = useProductsFiltersStore((state) => state.search);
   const supplierIds = useProductsFiltersStore((state) => state.supplierIds);
@@ -75,6 +78,23 @@ export default function ProductsPage() {
 
   const handleOpenDocument = (record: DocumentItemRowDTO) => {
     navigate(`${Routes.documents}/${record.supplierId}/${record.documentId}`);
+  };
+
+  const handlePrint = async (record: DocumentItemRowDTO) => {
+    const supplier = suppliers.find((item) => item.id === record.supplierId);
+
+    await printTags({
+      tagType: TagType.FOUR_X_TWO_FIVE,
+      data: [
+        {
+          sku: record.sku,
+          name: record.name,
+          supplierCode: supplier?.code ?? '',
+          price: record.sumWithVat,
+          number: String(record.id),
+        },
+      ],
+    });
   };
 
   return (
@@ -159,7 +179,7 @@ export default function ProductsPage() {
       <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
         <Table
           rowKey="id"
-          columns={getColumns(handleOpenDocument)}
+          columns={getColumns(handleOpenDocument, handlePrint)}
           size="small"
           dataSource={data?.items}
           loading={isLoading || isFetching}
