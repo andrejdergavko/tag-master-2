@@ -7,6 +7,7 @@ import { useGetDocuments } from '../modules/documents/hooks/useGetDocuments';
 import { Routes } from '../shared/constants/routes';
 import DocumentTypeTag from '../shared/components/DocumentTypeTag';
 import UpdateAllButton from '../shared/components/UpdateAllButton';
+import UpdateSupplierButton from '../shared/components/UpdateSupplierButton';
 import { formatDate } from '../shared/utils/date';
 import suppliers from '../modules/suppliers';
 
@@ -89,10 +90,14 @@ export default function DocumentsPage() {
         style={{
           display: 'flex',
           justifyContent: 'flex-end',
+          gap: 8,
           marginBottom: 16,
         }}
       >
         <UpdateAllButton />
+        {supplierId && (
+          <UpdateSupplierButton supplierId={supplierId as SupplierId} />
+        )}
       </div>
 
       <div style={{ height: '100%', overflow: 'auto' }}>
