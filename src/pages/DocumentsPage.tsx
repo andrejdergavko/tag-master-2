@@ -70,7 +70,11 @@ export default function DocumentsPage() {
   );
 
   if (isLoading) {
-    return <Spin />;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Spin />
+      </div>
+    );
   }
 
   return (

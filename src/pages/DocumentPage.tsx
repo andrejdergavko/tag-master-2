@@ -121,7 +121,11 @@ export default function DocumentPage() {
         <BackButton />
       </div>
 
-      {isLoading && <Spin />}
+      {isLoading && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Spin />
+        </div>
+      )}
       {!isLoading && !document && <div>Документ не найден</div>}
       {!isLoading && document && (
         <>
