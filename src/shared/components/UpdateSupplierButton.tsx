@@ -24,7 +24,7 @@ export default function UpdateSupplierButton({
   };
 
   return (
-    <Button type="default" loading={isPending} onClick={handleClick}>
+    <Button type="primary" loading={isPending} onClick={handleClick}>
       Обновить
     </Button>
   );
