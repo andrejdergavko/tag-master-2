@@ -6,7 +6,8 @@ const motex: SupplierDTO = {
   id: SupplierId.MOTEX,
   name: 'Motex',
   code: 'MOT',
-  email: 'echernyavskaya@motex.by',
+  // email: 'echernyavskaya@motex.by',
+  email: 'tbelenik@motex.by',
   masks: [ttnVerticalMask],
   icon: {
     src: logo,
