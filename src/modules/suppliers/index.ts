@@ -7,8 +7,10 @@ import motex from './motex';
 import shateM from './shate-m';
 import monlibon from './monlibon';
 import dias from './dias';
+import armtek from './armtek';
 
 export default [
+  armtek,
   motex,
   shateM,
   autopiter,

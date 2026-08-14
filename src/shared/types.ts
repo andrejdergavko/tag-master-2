@@ -79,6 +79,7 @@ export enum SupplierId {
   FORSAGE = 'forsage',
   MONLIBON = 'monlibon',
   DIAS = 'dias',
+  ARMTEK = 'armtek',
 }
 
 export type IMask = {
