@@ -4,7 +4,7 @@ import { ttnVerticalMask } from './masks/ttnVertical/ttnVerticalMask';
 
 const armtek: SupplierDTO = {
   id: SupplierId.ARMTEK,
-  name: 'Armtek',
+  name: 'Армтек',
   code: 'ARM',
   email: 'service_1@armtek.by',
   masks: [ttnVerticalMask],

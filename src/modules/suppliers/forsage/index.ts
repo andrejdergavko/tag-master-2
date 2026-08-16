@@ -4,7 +4,7 @@ import { applicationMask } from './masks/application/applicationMask';
 
 const forsage: SupplierDTO = {
   id: SupplierId.FORSAGE,
-  name: 'Forsage',
+  name: 'Форсаж',
   code: 'FORS',
   email: 'opt@th-tool.by',
   icon: {

@@ -4,7 +4,7 @@ import { packingListMask } from './masks/packingList/packingListMask';
 
 const monlibon: SupplierDTO = {
   id: SupplierId.MONLIBON,
-  name: 'Monlibon',
+  name: 'Монлибон',
   code: 'MON',
   email: 'noreply@monlibon.by',
   masks: [packingListMask],

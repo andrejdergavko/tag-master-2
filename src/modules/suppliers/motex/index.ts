@@ -4,7 +4,7 @@ import { ttnVerticalMask } from './masks/ttnVertical/ttnVerticalMask';
 
 const motex: SupplierDTO = {
   id: SupplierId.MOTEX,
-  name: 'Motex',
+  name: 'Мотекс',
   code: 'MOT',
   // email: 'echernyavskaya@motex.by',
   email: 'tbelenik@motex.by',

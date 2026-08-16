@@ -4,7 +4,7 @@ import { ttnVerticalMask } from './masks/ttnVertical/ttnVerticalMask';
 
 const amazis: SupplierDTO = {
   id: SupplierId.AMAZIS,
-  name: 'Amazis',
+  name: 'Амазис',
   code: 'AMZ',
   email: 'robot@amazis.by',
   masks: [ttnVerticalMask],

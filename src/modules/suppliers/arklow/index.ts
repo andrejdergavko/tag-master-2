@@ -4,7 +4,7 @@ import { ttnVerticalMask } from './masks/ttnVertical/ttnVerticalMask';
 
 const arklow: SupplierDTO = {
   id: SupplierId.ARKLOW,
-  name: 'Arklow',
+  name: 'Арклов',
   code: 'ARK',
   email: 'info@ussrauto.by',
   masks: [ttnVerticalMask],

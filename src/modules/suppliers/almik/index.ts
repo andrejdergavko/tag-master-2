@@ -4,7 +4,7 @@ import logo from '../../../assets/almik-logo.jpg';
 
 const almik: SupplierDTO = {
   id: SupplierId.ALMIK,
-  name: 'Almik',
+  name: 'Алмик',
   code: 'ALM',
   email: 'almikauto@mail.ru',
   masks: [ttnVerticalMask],
