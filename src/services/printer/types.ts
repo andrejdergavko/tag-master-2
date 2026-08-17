@@ -8,6 +8,13 @@ export type TagDataMap = {
     price: number;
     number: string;
   };
+  [TagType.FIVE_EIGHT_X_THREE]: {
+    sku?: string;
+    name: string;
+    supplierCode: string;
+    price: number;
+    number: string;
+  };
 };
 
 export type TagData<T extends TagType> = TagDataMap[T];
