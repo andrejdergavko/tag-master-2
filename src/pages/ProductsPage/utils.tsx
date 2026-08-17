@@ -1,7 +1,7 @@
 import type { ColumnsType } from 'antd/es/table';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import { endOfDay, startOfDay, subMonths, subWeeks, subYears } from 'date-fns';
+import { endOfDay, startOfDay, subDays, subMonths, subWeeks } from 'date-fns';
 import {
   CheckCircleOutlined,
   FileTextOutlined,
@@ -16,11 +16,11 @@ export const PAGE_SIZE = 100;
 
 export const datePresetOptions: { label: string; value: DatePreset }[] = [
   { label: 'Сегодня', value: '1d' },
+  { label: '2 дня', value: '2d' },
   { label: 'Неделя', value: '1w' },
   { label: '2 недели', value: '2w' },
   { label: 'Месяц', value: '1m' },
   { label: '3 месяца', value: '3m' },
-  { label: 'Год', value: '1y' },
   { label: 'Всё время', value: 'all' },
 ];
 
@@ -33,6 +33,8 @@ export const getRangeForPreset = (
   switch (preset) {
     case '1d':
       return [dayjs(startOfDay(now)), to];
+    case '2d':
+      return [dayjs(startOfDay(subDays(now, 2))), to];
     case '1w':
       return [dayjs(startOfDay(subWeeks(now, 1))), to];
     case '2w':
@@ -41,8 +43,6 @@ export const getRangeForPreset = (
       return [dayjs(startOfDay(subMonths(now, 1))), to];
     case '3m':
       return [dayjs(startOfDay(subMonths(now, 3))), to];
-    case '1y':
-      return [dayjs(startOfDay(subYears(now, 1))), to];
     case 'all':
       return null;
   }

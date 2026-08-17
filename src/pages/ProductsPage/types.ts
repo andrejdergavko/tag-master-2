@@ -1,6 +1,6 @@
 import { SupplierId } from '../../shared/types';
 
-export type DatePreset = '1d' | '1w' | '2w' | '1m' | '3m' | '1y' | 'all';
+export type DatePreset = '1d' | '2d' | '1w' | '2w' | '1m' | '3m' | 'all';
 
 export type ProductsFiltersState = {
   searchInput: string;
