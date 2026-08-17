@@ -61,7 +61,7 @@ export type SupplierDTO = {
   id: SupplierId;
   name: string;
   code: string;
-  email: string;
+  emails: string[];
   masks: IMask[];
   icon: {
     src: string;

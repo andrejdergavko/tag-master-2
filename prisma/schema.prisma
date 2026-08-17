@@ -16,7 +16,7 @@ enum DocumentType {
 model Supplier {
   id        String     @id
   name      String
-  email     String     @unique
+  emails    String[]
   documents Document[]
   mails     Mail[]
   createdAt DateTime   @default(now())

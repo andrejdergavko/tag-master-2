@@ -6,7 +6,7 @@ const amazis: SupplierDTO = {
   id: SupplierId.AMAZIS,
   name: 'Амазис',
   code: 'AMZ',
-  email: 'robot@amazis.by',
+  emails: ['robot@amazis.by'],
   masks: [ttnVerticalMask],
   icon: {
     src: logo,

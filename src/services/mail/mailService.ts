@@ -25,11 +25,11 @@ export const fetchNewInvoicesBySupplier = async (
       create: {
         id: supplier.id,
         name: supplier.name,
-        email: supplier.email,
+        emails: supplier.emails,
       },
       update: {
         name: supplier.name,
-        email: supplier.email,
+        emails: supplier.emails,
       },
     });
 
@@ -56,7 +56,10 @@ export const fetchNewInvoicesBySupplier = async (
       try {
         const messages = (
           await client.fetchAll(
-            { from: supplier.email, sentSince },
+            {
+              or: supplier.emails.map((email) => ({ from: email })),
+              sentSince,
+            },
             { envelope: true, uid: true, bodyStructure: true },
           )
         ).filter(
@@ -231,7 +234,9 @@ export const downloadDocumentAttachment = async (
 
     const filename =
       document.source ||
-      (document.number ? `document-${document.number}` : `document-${document.id}`);
+      (document.number
+        ? `document-${document.number}`
+        : `document-${document.id}`);
 
     return { buffer, filename };
   } finally {

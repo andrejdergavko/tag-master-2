@@ -6,7 +6,7 @@ const arklow: SupplierDTO = {
   id: SupplierId.ARKLOW,
   name: 'Арклов',
   code: 'ARK',
-  email: 'info@ussrauto.by',
+  emails: ['info@ussrauto.by'],
   masks: [ttnVerticalMask],
   icon: {
     src: logo,

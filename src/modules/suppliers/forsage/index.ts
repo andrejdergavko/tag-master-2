@@ -6,7 +6,7 @@ const forsage: SupplierDTO = {
   id: SupplierId.FORSAGE,
   name: 'Форсаж',
   code: 'FORS',
-  email: 'opt@th-tool.by',
+  emails: ['opt@th-tool.by'],
   icon: {
     src: logo,
     style: {

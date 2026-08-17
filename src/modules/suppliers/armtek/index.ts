@@ -6,7 +6,7 @@ const armtek: SupplierDTO = {
   id: SupplierId.ARMTEK,
   name: 'Армтек',
   code: 'ARM',
-  email: 'service_1@armtek.by',
+  emails: ['service_1@armtek.by'],
   masks: [ttnVerticalMask],
   icon: {
     src: logo,

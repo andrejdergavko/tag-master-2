@@ -6,7 +6,7 @@ const shateM: SupplierDTO = {
   id: SupplierId.SHATE_M,
   name: 'Шате-М',
   code: 'STM',
-  email: 'webshop@shate-m.com',
+  emails: ['webshop@shate-m.com'],
   masks: [ttnVerticalMask],
   icon: {
     src: logo,

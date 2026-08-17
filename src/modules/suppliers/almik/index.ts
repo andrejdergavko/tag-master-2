@@ -6,7 +6,7 @@ const almik: SupplierDTO = {
   id: SupplierId.ALMIK,
   name: 'Алмик',
   code: 'ALM',
-  email: 'almikauto@mail.ru',
+  emails: ['almikauto@mail.ru'],
   masks: [ttnVerticalMask],
   icon: {
     src: logo,

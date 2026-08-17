@@ -6,7 +6,7 @@ const autopiter: SupplierDTO = {
   id: SupplierId.AUTOPITER,
   name: 'Автопитер',
   code: 'APTR',
-  email: 'autopiter@autopiter.ru',
+  emails: ['autopiter@autopiter.ru'],
   masks: [ttnVerticalMask],
   icon: {
     src: logo,

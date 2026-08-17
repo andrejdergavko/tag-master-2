@@ -6,7 +6,7 @@ const monlibon: SupplierDTO = {
   id: SupplierId.MONLIBON,
   name: 'Монлибон',
   code: 'MON',
-  email: 'noreply@monlibon.by',
+  emails: ['noreply@monlibon.by'],
   masks: [packingListMask],
   icon: {
     src: logo,

@@ -6,7 +6,7 @@ const dias: SupplierDTO = {
   id: SupplierId.DIAS,
   name: 'Диас',
   code: 'DIA',
-  email: 'no-reply@dias.by',
+  emails: ['no-reply@dias.by'],
   masks: [ttnVerticalMask],
   icon: {
     src: logo,
