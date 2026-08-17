@@ -55,16 +55,17 @@ model Mail {
 }
 
 model DocumentItem {
-  id          Int       @id @default(autoincrement())
-  documentId  String
-  document    Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  sku         String?
-  name        String
-  units       String
-  quantity    Int
-  sumWithVat  Decimal
-  description String
-  printedAt   DateTime?
+  id            Int       @id @default(autoincrement())
+  documentId    String
+  document      Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  sku           String?
+  name          String
+  units         String
+  quantity      Int
+  sumWithVat    Decimal
+  description   String
+  printedAt     DateTime?
+  nameEmbedding Unsupported("vector(768)")?
 
   @@index([name])
   @@index([sku])

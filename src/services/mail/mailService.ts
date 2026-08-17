@@ -8,6 +8,7 @@ import {
 import suppliers from '../../modules/suppliers';
 import { DocumentDTO, SupplierId } from '../../shared/types';
 import { getPrisma } from '../db/prisma';
+import { saveNameEmbeddings } from '../embeddings/embeddingsService';
 
 export const fetchNewInvoicesBySupplier = async (
   supplierId: string,
@@ -130,6 +131,8 @@ export const fetchNewInvoicesBySupplier = async (
                     },
                   },
                 });
+                await saveNameEmbeddings(data.items.map((item) => item.name));
+
                 documents.push(data);
                 break;
               }

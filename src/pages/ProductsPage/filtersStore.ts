@@ -5,6 +5,7 @@ import { DatePreset, ProductsFiltersState } from './types';
 type ProductsFiltersStore = ProductsFiltersState & {
   setSearchInput: (searchInput: string) => void;
   setSearch: (search: string) => void;
+  setSemanticSearch: (semanticSearch: boolean) => void;
   setSupplierIds: (supplierIds: SupplierId[]) => void;
   setDatePreset: (datePreset: DatePreset | null) => void;
   setDateRange: (dateFrom: string | null, dateTo: string | null) => void;
@@ -14,6 +15,7 @@ type ProductsFiltersStore = ProductsFiltersState & {
 export const useProductsFiltersStore = create<ProductsFiltersStore>((set) => ({
   searchInput: '',
   search: '',
+  semanticSearch: false,
   supplierIds: [],
   datePreset: 'all',
   dateFrom: null,
@@ -21,6 +23,7 @@ export const useProductsFiltersStore = create<ProductsFiltersStore>((set) => ({
   page: 1,
   setSearchInput: (searchInput) => set({ searchInput }),
   setSearch: (search) => set({ search }),
+  setSemanticSearch: (semanticSearch) => set({ semanticSearch, page: 1 }),
   setSupplierIds: (supplierIds) => set({ supplierIds, page: 1 }),
   setDatePreset: (datePreset) => set({ datePreset }),
   setDateRange: (dateFrom, dateTo) => set({ dateFrom, dateTo }),

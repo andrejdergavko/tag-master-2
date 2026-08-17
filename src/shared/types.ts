@@ -30,6 +30,7 @@ export type DocumentItemDTO = {
 
 export type GetDocumentItemsParams = {
   search?: string;
+  semanticSearch?: boolean;
   supplierIds?: SupplierId[];
   dateFrom?: string | null;
   dateTo?: string | null;
