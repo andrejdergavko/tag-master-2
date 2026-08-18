@@ -88,6 +88,18 @@ const electronHandler = {
     setDatabaseUrl(databaseUrl: string): Promise<void> {
       return ipcRenderer.invoke('config:set-database-url', databaseUrl);
     },
+    hasYandexFolderId(): Promise<boolean> {
+      return ipcRenderer.invoke('config:has-yandex-folder-id');
+    },
+    setYandexFolderId(folderId: string): Promise<void> {
+      return ipcRenderer.invoke('config:set-yandex-folder-id', folderId);
+    },
+    hasYandexApiKey(): Promise<boolean> {
+      return ipcRenderer.invoke('config:has-yandex-api-key');
+    },
+    setYandexApiKey(apiKey: string): Promise<void> {
+      return ipcRenderer.invoke('config:set-yandex-api-key', apiKey);
+    },
   },
   update: {
     getVersion(): Promise<string> {

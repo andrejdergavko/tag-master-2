@@ -1,4 +1,5 @@
 import { Prisma } from '../../../generated/prisma/client';
+import { getYandexApiKey, getYandexFolderId } from '../config/configService';
 import { getPrisma } from '../db/prisma';
 
 const EMBEDDING_URL =
@@ -11,15 +12,12 @@ const toVectorLiteral = (embedding: number[]): string =>
   `[${embedding.join(',')}]`;
 
 const getYandexConfig = () => {
-  const apiKey = process.env.YANDEX_API_KEY?.trim();
-  const folderId = process.env.YANDEX_FOLDER_ID?.trim().replace(
-    /^['"]|['"]$/g,
-    '',
-  );
+  const apiKey = getYandexApiKey()?.trim();
+  const folderId = getYandexFolderId()?.trim().replace(/^['"]|['"]$/g, '');
 
   if (!apiKey || !folderId) {
     throw new Error(
-      'YANDEX_API_KEY and YANDEX_FOLDER_ID must be set in .env (use the folder id from the working API request)',
+      'API-ключ и ID каталога Yandex Cloud должны быть заданы в настройках',
     );
   }
 

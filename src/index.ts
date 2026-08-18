@@ -17,6 +17,10 @@ import {
   setEmail,
   hasDatabaseUrl,
   setDatabaseUrl,
+  hasYandexFolderId,
+  setYandexFolderId,
+  hasYandexApiKey,
+  setYandexApiKey,
 } from './services/config/configService';
 import { resetPrismaClient } from './services/db/prisma';
 import { getPrinterList, printTags } from './services/printer/printerService';
@@ -136,6 +140,21 @@ ipcMain.handle('config:has-database-url', () => {
 ipcMain.handle('config:set-database-url', (_: unknown, databaseUrl: string) => {
   setDatabaseUrl(databaseUrl);
   resetPrismaClient();
+});
+ipcMain.handle('config:has-yandex-folder-id', () => {
+  return hasYandexFolderId();
+});
+ipcMain.handle(
+  'config:set-yandex-folder-id',
+  (_: unknown, folderId: string) => {
+    setYandexFolderId(folderId);
+  },
+);
+ipcMain.handle('config:has-yandex-api-key', () => {
+  return hasYandexApiKey();
+});
+ipcMain.handle('config:set-yandex-api-key', (_: unknown, apiKey: string) => {
+  setYandexApiKey(apiKey);
 });
 ipcMain.handle('update:get-version', () => {
   return getAppVersion();

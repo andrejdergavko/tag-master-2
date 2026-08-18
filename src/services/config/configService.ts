@@ -4,13 +4,17 @@ import Store from 'electron-store';
 type EncryptedKey =
   | 'imapPasswordEncrypted'
   | 'emailEncrypted'
-  | 'databaseUrlEncrypted';
+  | 'databaseUrlEncrypted'
+  | 'yandexFolderIdEncrypted'
+  | 'yandexApiKeyEncrypted';
 
 export type AppConfig = {
   defaultPrinter: string | null;
   imapPasswordEncrypted: string | null;
   emailEncrypted: string | null;
   databaseUrlEncrypted: string | null;
+  yandexFolderIdEncrypted: string | null;
+  yandexApiKeyEncrypted: string | null;
 };
 
 const store = new Store<AppConfig>({
@@ -20,6 +24,8 @@ const store = new Store<AppConfig>({
     imapPasswordEncrypted: null,
     emailEncrypted: null,
     databaseUrlEncrypted: null,
+    yandexFolderIdEncrypted: null,
+    yandexApiKeyEncrypted: null,
   },
 });
 
@@ -76,3 +82,17 @@ export const setDatabaseUrl = (databaseUrl: string): void =>
   setEncrypted('databaseUrlEncrypted', databaseUrl);
 export const getDatabaseUrl = (): string | null =>
   getEncrypted('databaseUrlEncrypted');
+
+export const hasYandexFolderId = (): boolean =>
+  hasEncrypted('yandexFolderIdEncrypted');
+export const setYandexFolderId = (folderId: string): void =>
+  setEncrypted('yandexFolderIdEncrypted', folderId);
+export const getYandexFolderId = (): string | null =>
+  getEncrypted('yandexFolderIdEncrypted');
+
+export const hasYandexApiKey = (): boolean =>
+  hasEncrypted('yandexApiKeyEncrypted');
+export const setYandexApiKey = (apiKey: string): void =>
+  setEncrypted('yandexApiKeyEncrypted', apiKey);
+export const getYandexApiKey = (): string | null =>
+  getEncrypted('yandexApiKeyEncrypted');

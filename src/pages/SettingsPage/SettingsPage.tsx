@@ -3,6 +3,8 @@ import { DefaultPrinterField } from './DefaultPrinterField';
 import { EmailField } from './EmailField';
 import { ImapPasswordField } from './ImapPasswordField';
 import { DatabaseUrlField } from './DatabaseUrlField';
+import { YandexFolderIdField } from './YandexFolderIdField';
+import { YandexApiKeyField } from './YandexApiKeyField';
 import { AppUpdateField } from './AppUpdateField';
 
 export default function SettingsPage() {
@@ -12,6 +14,8 @@ export default function SettingsPage() {
       <EmailField />
       <ImapPasswordField />
       <DatabaseUrlField />
+      <YandexFolderIdField />
+      <YandexApiKeyField />
       <AppUpdateField />
     </Form>
   );
