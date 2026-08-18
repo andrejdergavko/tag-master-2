@@ -1,6 +1,7 @@
 import { MailboxLockObject } from 'imapflow/lib/imap-flow';
 import { createImapClient } from './client';
 import {
+  documentAlreadyExists,
   getAttachmentBuffer,
   getMessageAttachmentsFlat,
   toDocumentDTO,
@@ -122,6 +123,9 @@ export const fetchNewInvoicesBySupplier = async (
                   buffer,
                   attachment.parameters?.name,
                 );
+
+                if (await documentAlreadyExists(data)) break;
+
                 await getPrisma().document.create({
                   data: {
                     type: data.type,

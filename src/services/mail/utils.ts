@@ -7,6 +7,7 @@ import { WorkSheet, utils } from 'xlsx';
 import { buffer as streamToBuffer } from 'node:stream/consumers';
 import { DocumentDTO, DocumentType, SupplierId } from '../../shared/types';
 import { Document, DocumentItem } from '../../../generated/prisma/client';
+import { getPrisma } from '../db/prisma';
 
 export function findAttachments(
   node: MessageStructureObject,
@@ -57,6 +58,29 @@ export const getAttachmentBuffer = async (
         downloadedAttachment.content as unknown as NodeJS.ReadableStream,
       )
     : null;
+};
+
+export const documentAlreadyExists = async (
+  data: Pick<DocumentDTO, 'date' | 'supplierId' | 'totalSumWithVat'>,
+) => {
+  if (!data.date) return false;
+
+  const dayStart = new Date(data.date);
+  dayStart.setHours(0, 0, 0, 0);
+
+  const dayEnd = new Date(data.date);
+  dayEnd.setHours(23, 59, 59, 999);
+
+  const existing = await getPrisma().document.findFirst({
+    where: {
+      supplierId: data.supplierId,
+      date: { gte: dayStart, lte: dayEnd },
+      totalSumWithVat: data.totalSumWithVat,
+    },
+    select: { id: true },
+  });
+
+  return Boolean(existing);
 };
 
 export const toDocumentDTO = (

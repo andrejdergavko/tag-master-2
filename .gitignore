@@ -95,3 +95,5 @@ out/
 
 .vscode/settings.json
 .vscode/sessions.json
+
+.cursor
