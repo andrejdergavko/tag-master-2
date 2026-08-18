@@ -102,7 +102,7 @@ export default function DocumentPage() {
           sku: record.sku,
           name: record.name,
           supplierCode: supplier?.code ?? '',
-          price: record.sumWithVat,
+          price: record.sumWithVat / record.quantity,
           number: String(record.id),
         },
       ],

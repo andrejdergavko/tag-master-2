@@ -68,7 +68,7 @@ export default function PrintTagsPage() {
         const copies = quantities[row.key] ?? 1;
         return Array.from({ length: copies }, () => ({
           name: row.data.name,
-          price: row.data.sumWithVat,
+          price: row.data.sumWithVat / row.data.quantity,
           supplierCode: supplier?.code ?? '',
           number: String(row.data.id),
           sku: row.data.sku,
