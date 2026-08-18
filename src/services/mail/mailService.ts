@@ -8,7 +8,10 @@ import {
 import suppliers from '../../modules/suppliers';
 import { DocumentDTO, SupplierId } from '../../shared/types';
 import { getPrisma } from '../db/prisma';
-import { saveNameEmbeddings } from '../embeddings/embeddingsService';
+import {
+  backfillMissingNameEmbeddings,
+  saveNameEmbeddings,
+} from '../embeddings/embeddingsService';
 
 export const fetchNewInvoicesBySupplier = async (
   supplierId: string,
@@ -144,6 +147,10 @@ export const fetchNewInvoicesBySupplier = async (
         lock = undefined;
       }
     }
+
+    void backfillMissingNameEmbeddings().catch((error) => {
+      console.error('Failed to backfill name embeddings', error);
+    });
 
     return documents;
   } finally {

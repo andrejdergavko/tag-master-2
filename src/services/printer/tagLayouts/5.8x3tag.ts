@@ -22,7 +22,8 @@ const get58x3TagLayout = ({
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const year = String(now.getFullYear() % 100).padStart(2, '0');
   // Формат: X{MM}{YY}A{цена}, например X0826A33.2
-  const specialCode = `X${month}${year}0${price}`;
+  const formattedPrice = Number(price.toFixed(1));
+  const specialCode = `X${month}${year}0${formattedPrice}`;
   const title = sku ? `${sku} ${name}` : name;
 
   return [
