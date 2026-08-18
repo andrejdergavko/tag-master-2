@@ -1,6 +1,7 @@
 import { print } from '@maxxuxx/node-printer';
 import { getPrinters } from 'pdf-to-printer';
 import { getDefaultPrinter } from '../config/configService';
+import { sanitizeProductName } from './sanitizeProductName';
 import { DEFAULT_PRINTER_NAME, TagType } from './constants';
 import get4x25TagLayout from './tagLayouts/4x2.5tag';
 import get58x3TagLayout from './tagLayouts/5.8x3tag';
@@ -27,7 +28,14 @@ export const printTags = async <T extends TagType>(
   const resolvedPrinterName =
     printerName ?? getDefaultPrinter() ?? DEFAULT_PRINTER_NAME;
 
-  const tagLayouts = data.map((item) => getTagLayout(tagType, item)).join('');
+  const tagLayouts = data
+    .map((item) =>
+      getTagLayout(tagType, {
+        ...item,
+        name: sanitizeProductName(item.name),
+      }),
+    )
+    .join('');
 
   const encoded = new TextEncoder().encode(tagLayouts);
 
