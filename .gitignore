@@ -92,3 +92,6 @@ typings/
 out/
 
 /generated/prisma
+
+.vscode/settings.json
+.vscode/sessions.json
