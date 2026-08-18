@@ -54,7 +54,10 @@ export const fetchNewInvoicesBySupplier = async (
 
     const documents: DocumentDTO[] = [];
 
-    for (const mailboxPath of ['INBOX', 'Спам']) {
+    // const mailboxes = await client.list();
+    // console.log(mailboxes);
+
+    for (const mailboxPath of ['INBOX', 'Спам', 'INBOX/Поставщики']) {
       lock = await client.getMailboxLock(mailboxPath);
 
       try {
