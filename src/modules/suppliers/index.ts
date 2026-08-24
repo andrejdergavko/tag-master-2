@@ -8,6 +8,7 @@ import shateM from './shate-m';
 import monlibon from './monlibon';
 import dias from './dias';
 import armtek from './armtek';
+import pilot from './pilot';
 
 export default [
   armtek,
@@ -20,4 +21,5 @@ export default [
   monlibon,
   amazis,
   dias,
+  pilot,
 ];

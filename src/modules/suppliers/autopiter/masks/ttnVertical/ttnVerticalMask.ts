@@ -5,7 +5,10 @@ import {
   DocumentItemDTO,
   SupplierId,
 } from '../../../../../shared/types';
-import { MIME_TYPE_EXCEL } from '../../../../../shared/constants';
+import {
+  MIME_TYPE_EXCEL,
+  MIME_TYPE_EXCEL_OLD,
+} from '../../../../../shared/constants';
 import {
   getProductRowData,
   getRowType,
@@ -19,7 +22,10 @@ export const ttnVerticalMask = {
   type: DocumentType.TTN,
   description: 'ТТН вертикальная',
   isMatch: (attachment: MessageStructureObject) => {
-    if (attachment.type !== MIME_TYPE_EXCEL) {
+    if (
+      attachment.type !== MIME_TYPE_EXCEL &&
+      attachment.type !== MIME_TYPE_EXCEL_OLD
+    ) {
       return false;
     }
 
