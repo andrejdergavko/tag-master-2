@@ -71,6 +71,7 @@ export type SupplierDTO = {
 };
 
 export enum SupplierId {
+  L_AUTO = 'l-auto',
   AMAZIS = 'amazis',
   SHATE_M = 'shate-m',
   MOTEX = 'motex',

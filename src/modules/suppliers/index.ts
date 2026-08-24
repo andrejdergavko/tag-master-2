@@ -9,6 +9,7 @@ import monlibon from './monlibon';
 import dias from './dias';
 import armtek from './armtek';
 import pilot from './pilot';
+import lAuto from './l-auto';
 
 export default [
   armtek,
@@ -19,6 +20,7 @@ export default [
   forsage,
   almik,
   monlibon,
+  lAuto,
   amazis,
   dias,
   pilot,
