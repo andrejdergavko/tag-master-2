@@ -13,6 +13,7 @@ import {
   getProductRowData,
   getRowType,
   getTotalRowData,
+  parseSkuFromNote,
   parseTTNNumber,
 } from './utils';
 import { parseInvoiceDate } from '../utils';
@@ -51,6 +52,7 @@ export const ttnVerticalMask = {
       if (rowType === 'product') {
         const productRowData = getProductRowData(row);
         invoiceItems.push({
+          sku: parseSkuFromNote(productRowData.description),
           name: String(productRowData.name),
           units: String(productRowData.units),
           quantity: Number(productRowData.quantity),

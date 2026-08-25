@@ -57,3 +57,12 @@ export const parseTTNNumber = (
     number: numberMatch[0],
   };
 };
+
+export const parseSkuFromNote = (rawCell: unknown): string | undefined => {
+  if (typeof rawCell !== 'string') return undefined;
+
+  const skuMatch = rawCell.match(/Артикул\s*-\s*\[([^\]]+)\]/i);
+  if (!skuMatch?.[1]) return undefined;
+
+  return skuMatch[1].trim();
+};
