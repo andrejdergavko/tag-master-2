@@ -1,5 +1,6 @@
 import { Form } from 'antd';
 import { DefaultPrinterField } from './DefaultPrinterField';
+import { TagTypeField } from './TagTypeField';
 import { EmailField } from './EmailField';
 import { ImapPasswordField } from './ImapPasswordField';
 import { DatabaseUrlField } from './DatabaseUrlField';
@@ -11,6 +12,7 @@ export default function SettingsPage() {
   return (
     <Form layout="vertical" style={{ maxWidth: 480 }}>
       <DefaultPrinterField />
+      <TagTypeField />
       <EmailField />
       <ImapPasswordField />
       <DatabaseUrlField />

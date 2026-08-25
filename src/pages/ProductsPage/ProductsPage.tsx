@@ -16,7 +16,6 @@ import { useGetDocumentItems } from '../../modules/documents/hooks/useGetDocumen
 import { usePrintTags } from '../../modules/printer/hooks/usePrintTags';
 import suppliers from '../../modules/suppliers';
 import { Routes } from '../../shared/constants/routes';
-import { TagType } from '../../services/printer/constants';
 import { useProductsFiltersStore } from './filtersStore';
 import { DatePreset } from './types';
 import {
@@ -103,7 +102,6 @@ export default function ProductsPage() {
     const supplier = suppliers.find((item) => item.id === record.supplierId);
 
     await printTags({
-      tagType: TagType.FOUR_THREE_X_TWO_FIVE,
       data: [
         {
           sku: record.sku,

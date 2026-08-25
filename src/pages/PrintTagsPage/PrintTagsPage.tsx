@@ -6,7 +6,6 @@ import { SupplierId } from '../../shared/types';
 import { useGetDocument } from '../../modules/documents/hooks/useGetDocument';
 import { usePrintTags } from '../../modules/printer/hooks/usePrintTags';
 import BackButton from '../../shared/components/BackButton';
-import { TagType } from '../../services/printer/constants';
 import suppliers from '../../modules/suppliers';
 import { PrintRow } from './types';
 
@@ -76,7 +75,6 @@ export default function PrintTagsPage() {
       });
 
     await printTags({
-      tagType: TagType.FOUR_THREE_X_TWO_FIVE,
       data: itemsToPrint,
     });
   };

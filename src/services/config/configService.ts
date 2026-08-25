@@ -1,5 +1,6 @@
 import { safeStorage } from 'electron';
 import Store from 'electron-store';
+import { DEFAULT_TAG_TYPE, TagType } from '../printer/constants';
 
 type EncryptedKey =
   | 'imapPasswordEncrypted'
@@ -10,6 +11,7 @@ type EncryptedKey =
 
 export type AppConfig = {
   defaultPrinter: string | null;
+  tagType: TagType;
   imapPasswordEncrypted: string | null;
   emailEncrypted: string | null;
   databaseUrlEncrypted: string | null;
@@ -21,6 +23,7 @@ const store = new Store<AppConfig>({
   name: 'config',
   defaults: {
     defaultPrinter: null,
+    tagType: DEFAULT_TAG_TYPE,
     imapPasswordEncrypted: null,
     emailEncrypted: null,
     databaseUrlEncrypted: null,
@@ -62,6 +65,19 @@ export const getDefaultPrinter = (): string | null => {
 
 export const setDefaultPrinter = (printerName: string | null): void => {
   store.set('defaultPrinter', printerName);
+};
+
+const isTagType = (value: unknown): value is TagType => {
+  return Object.values(TagType).includes(value as TagType);
+};
+
+export const getTagType = (): TagType => {
+  const value = store.get('tagType');
+  return isTagType(value) ? value : DEFAULT_TAG_TYPE;
+};
+
+export const setTagType = (tagType: TagType): void => {
+  store.set('tagType', tagType);
 };
 
 export const hasImapPassword = (): boolean =>

@@ -11,6 +11,8 @@ import {
 import {
   getDefaultPrinter,
   setDefaultPrinter,
+  getTagType,
+  setTagType,
   hasImapPassword,
   setImapPassword,
   hasEmail,
@@ -94,13 +96,12 @@ ipcMain.handle('printer:get-printer-list', async () => {
 });
 ipcMain.handle(
   'printer:print-tags',
-  async <T extends TagType>(
+  async (
     _: unknown,
-    tagType: T,
-    data: TagData<T>[],
+    data: TagData<TagType>[],
     printerName?: string,
   ) => {
-    await printTags(tagType, data, printerName);
+    await printTags(data, printerName);
 
     const itemIds = [
       ...new Set(
@@ -122,6 +123,12 @@ ipcMain.handle(
     setDefaultPrinter(printerName);
   },
 );
+ipcMain.handle('config:get-tag-type', () => {
+  return getTagType();
+});
+ipcMain.handle('config:set-tag-type', (_: unknown, tagType: TagType) => {
+  setTagType(tagType);
+});
 ipcMain.handle('config:has-imap-password', () => {
   return hasImapPassword();
 });

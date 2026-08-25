@@ -50,17 +50,11 @@ const electronHandler = {
     > {
       return ipcRenderer.invoke('printer:get-printer-list');
     },
-    printTags<T extends TagType>(
-      tagType: T,
-      data: TagData<T>[],
+    printTags(
+      data: TagData<TagType>[],
       printerName?: string,
     ): Promise<void> {
-      return ipcRenderer.invoke(
-        'printer:print-tags',
-        tagType,
-        data,
-        printerName,
-      );
+      return ipcRenderer.invoke('printer:print-tags', data, printerName);
     },
   },
   config: {
@@ -69,6 +63,12 @@ const electronHandler = {
     },
     setDefaultPrinter(printerName: string | null): Promise<void> {
       return ipcRenderer.invoke('config:set-default-printer', printerName);
+    },
+    getTagType(): Promise<TagType> {
+      return ipcRenderer.invoke('config:get-tag-type');
+    },
+    setTagType(tagType: TagType): Promise<void> {
+      return ipcRenderer.invoke('config:set-tag-type', tagType);
     },
     hasImapPassword(): Promise<boolean> {
       return ipcRenderer.invoke('config:has-imap-password');

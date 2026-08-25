@@ -10,7 +10,6 @@ import BackButton from '../shared/components/BackButton';
 import DownloadDocumentButton from '../shared/components/DownloadDocumentButton';
 import DocumentTypeTag from '../shared/components/DocumentTypeTag';
 import { formatDate } from '../shared/utils/date';
-import { TagType } from '../services/printer/constants';
 import suppliers from '../modules/suppliers';
 import './DocumentPage.scss';
 
@@ -96,7 +95,6 @@ export default function DocumentPage() {
 
   const handlePrintItem = async (record: DocumentItemDTO) => {
     await printTags({
-      tagType: TagType.FOUR_THREE_X_TWO_FIVE,
       data: [
         {
           sku: record.sku,

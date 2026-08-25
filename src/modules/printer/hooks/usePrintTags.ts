@@ -5,13 +5,12 @@ import { TagType } from '../../../services/printer/constants';
 import { TagData } from '../../../services/printer/types';
 
 type PrintTagsParams = {
-  tagType: TagType;
   data: TagData<TagType>[];
   printerName?: string;
 };
 
-const printTags = ({ tagType, data, printerName }: PrintTagsParams) => {
-  return window.electron.printer.printTags(tagType, data, printerName);
+const printTags = ({ data, printerName }: PrintTagsParams) => {
+  return window.electron.printer.printTags(data, printerName);
 };
 
 export const usePrintTags = () => {
