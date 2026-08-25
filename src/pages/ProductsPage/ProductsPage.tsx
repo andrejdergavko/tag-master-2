@@ -103,7 +103,7 @@ export default function ProductsPage() {
     const supplier = suppliers.find((item) => item.id === record.supplierId);
 
     await printTags({
-      tagType: TagType.FOUR_X_TWO_FIVE,
+      tagType: TagType.FOUR_THREE_X_TWO_FIVE,
       data: [
         {
           sku: record.sku,

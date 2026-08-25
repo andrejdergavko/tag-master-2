@@ -4,6 +4,7 @@ import { getDefaultPrinter } from '../config/configService';
 import { sanitizeProductName } from './sanitizeProductName';
 import { DEFAULT_PRINTER_NAME, TagType } from './constants';
 import get4x25TagLayout from './tagLayouts/4x2.5tag';
+import get43x25TagLayout from './tagLayouts/4.3x2.5tag';
 import get58x3TagLayout from './tagLayouts/5.8x3tag';
 import { TagData } from './types';
 
@@ -15,6 +16,8 @@ const getTagLayout = <T extends TagType>(tagType: T, data: TagData<T>) => {
   switch (tagType) {
     case TagType.FOUR_X_TWO_FIVE:
       return get4x25TagLayout(data);
+    case TagType.FOUR_THREE_X_TWO_FIVE:
+      return get43x25TagLayout(data);
     case TagType.FIVE_EIGHT_X_THREE:
       return get58x3TagLayout(data);
   }

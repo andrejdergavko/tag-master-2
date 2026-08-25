@@ -1,7 +1,7 @@
 import { TagDataMap } from '../types';
 import { TagType } from '../constants';
 
-const LABEL_WIDTH = 320;
+const LABEL_WIDTH = 344;
 const LABEL_HEIGHT = 180;
 
 const BARCODE_WIDTH = Math.round(LABEL_WIDTH * 0.7);
@@ -11,13 +11,13 @@ const BARCODE_HEIGHT = 50;
 const SUPPLIER_CODE_WIDTH = Math.round(LABEL_WIDTH * 0.4);
 const SPECIAL_CODE_Y = BARCODE_Y - 27;
 
-const get4x25TagLayout = ({
+const get43x25TagLayout = ({
   name,
   price,
   supplierCode,
   number,
   sku,
-}: TagDataMap[TagType.FOUR_X_TWO_FIVE]) => {
+}: TagDataMap[TagType.FOUR_THREE_X_TWO_FIVE]) => {
   const now = new Date();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const year = String(now.getFullYear() % 100).padStart(2, '0');
@@ -46,7 +46,7 @@ const get4x25TagLayout = ({
     // ^TB orientation,width,height — текстовый блок с обрезкой по высоте:
     //   переносы считаются в wrapTitle (\n + дефис при разрыве слова)
     // ^FD...^FS — данные поля и конец поля (Field Data / Field Separator)
-    `^FO10,0^A@N,22,22,TT0003M_^FB300,200,0,L,0^FD${title.split('').join('\\')}^FS`,
+    `^FO10,0^A@N,22,22,TT0003M_^FB${LABEL_WIDTH - 20},200,0,L,0^FD${title.split('').join('\\')}^FS`,
 
     // Сплошной блок над штрихкодом:
     // ^GB width,height,thickness,color — прямоугольник (Graphic Box);
@@ -84,4 +84,4 @@ const get4x25TagLayout = ({
   ].join('\n');
 };
 
-export default get4x25TagLayout;
+export default get43x25TagLayout;

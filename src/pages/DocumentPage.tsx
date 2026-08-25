@@ -96,7 +96,7 @@ export default function DocumentPage() {
 
   const handlePrintItem = async (record: DocumentItemDTO) => {
     await printTags({
-      tagType: TagType.FOUR_X_TWO_FIVE,
+      tagType: TagType.FOUR_THREE_X_TWO_FIVE,
       data: [
         {
           sku: record.sku,
