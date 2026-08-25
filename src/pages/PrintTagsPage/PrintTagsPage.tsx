@@ -76,7 +76,7 @@ export default function PrintTagsPage() {
       });
 
     await printTags({
-      tagType: TagType.FIVE_EIGHT_X_THREE,
+      tagType: TagType.FOUR_X_TWO_FIVE,
       data: itemsToPrint,
     });
   };

@@ -1,5 +1,13 @@
 import { useEffect } from 'react';
-import { Checkbox, DatePicker, Input, Pagination, Segmented, Select, Table } from 'antd';
+import {
+  Checkbox,
+  DatePicker,
+  Input,
+  Pagination,
+  Segmented,
+  Select,
+  Table,
+} from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { useNavigate } from 'react-router-dom';
@@ -32,18 +40,24 @@ export default function ProductsPage() {
   const { mutateAsync: printTags } = usePrintTags();
   const searchInput = useProductsFiltersStore((state) => state.searchInput);
   const search = useProductsFiltersStore((state) => state.search);
-  const semanticSearch = useProductsFiltersStore((state) => state.semanticSearch);
+  const semanticSearch = useProductsFiltersStore(
+    (state) => state.semanticSearch,
+  );
   const supplierIds = useProductsFiltersStore((state) => state.supplierIds);
   const datePreset = useProductsFiltersStore((state) => state.datePreset);
   const dateFrom = useProductsFiltersStore((state) => state.dateFrom);
   const dateTo = useProductsFiltersStore((state) => state.dateTo);
   const page = useProductsFiltersStore((state) => state.page);
-  const setSearchInput = useProductsFiltersStore((state) => state.setSearchInput);
+  const setSearchInput = useProductsFiltersStore(
+    (state) => state.setSearchInput,
+  );
   const setSearch = useProductsFiltersStore((state) => state.setSearch);
   const setSemanticSearch = useProductsFiltersStore(
     (state) => state.setSemanticSearch,
   );
-  const setSupplierIds = useProductsFiltersStore((state) => state.setSupplierIds);
+  const setSupplierIds = useProductsFiltersStore(
+    (state) => state.setSupplierIds,
+  );
   const setDatePreset = useProductsFiltersStore((state) => state.setDatePreset);
   const setDateRange = useProductsFiltersStore((state) => state.setDateRange);
   const setPage = useProductsFiltersStore((state) => state.setPage);
@@ -89,7 +103,7 @@ export default function ProductsPage() {
     const supplier = suppliers.find((item) => item.id === record.supplierId);
 
     await printTags({
-      tagType: TagType.FIVE_EIGHT_X_THREE,
+      tagType: TagType.FOUR_X_TWO_FIVE,
       data: [
         {
           sku: record.sku,
