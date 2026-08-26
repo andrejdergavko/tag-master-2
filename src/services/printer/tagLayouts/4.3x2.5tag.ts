@@ -46,7 +46,7 @@ const get43x25TagLayout = ({
     // ^TB orientation,width,height — текстовый блок с обрезкой по высоте:
     //   переносы считаются в wrapTitle (\n + дефис при разрыве слова)
     // ^FD...^FS — данные поля и конец поля (Field Data / Field Separator)
-    `^FO10,0^A@N,22,22,TT0003M_^FB${LABEL_WIDTH - 20},200,0,L,0^FD${title.split('').join('\\')}^FS`,
+    `^FO10,3^A@N,22,22,TT0003M_^FB${LABEL_WIDTH - 20},200,0,L,0^FD${title.split('').join('\\')}^FS`,
 
     // Сплошной блок над штрихкодом:
     // ^GB width,height,thickness,color — прямоугольник (Graphic Box);
