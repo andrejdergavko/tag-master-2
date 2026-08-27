@@ -97,3 +97,5 @@ out/
 .vscode/sessions.json
 
 .cursor
+
+tag-master-2.code-workspace
