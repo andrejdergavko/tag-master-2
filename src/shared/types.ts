@@ -78,6 +78,7 @@ export enum SupplierId {
   ALMIK = 'almik',
   AUTOPITER = 'autopiter',
   ARKLOW = 'arklow',
+  WURTH = 'wurth',
   FORSAGE = 'forsage',
   MONLIBON = 'monlibon',
   DIAS = 'dias',
