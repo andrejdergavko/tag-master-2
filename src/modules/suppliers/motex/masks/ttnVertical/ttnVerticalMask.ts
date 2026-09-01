@@ -42,24 +42,33 @@ export const ttnVerticalMask = {
 
   extractData: (buffer: Buffer) => {
     const workbook = read(buffer, { type: 'buffer', codepage: 1251 });
-    const sheet = workbook.Sheets[workbook.SheetNames[0] ?? ''];
+    const sheet = workbook.Sheets[workbook.SheetNames[2] ?? ''];
 
     if (!sheet) throw new Error('Sheet not found');
 
+    const rows = getRowsInJSON(sheet);
     let totalSumWithVat = 0;
     const invoiceItems: DocumentItemDTO[] = [];
 
-    getRowsInJSON(sheet).forEach((row) => {
+    rows.forEach((row) => {
       const rowType = getRowType(row);
 
       if (rowType === 'product') {
         const productRowData = getProductRowData(row);
+        const manufacturer =
+          productRowData.manufacturer != null
+            ? String(productRowData.manufacturer).trim()
+            : '';
+
         invoiceItems.push({
-          name: String(productRowData.name),
+          sku: String(productRowData.sku).trim(),
+          name: manufacturer
+            ? `${String(productRowData.name).trim()} ${manufacturer}`
+            : String(productRowData.name).trim(),
           units: String(productRowData.units),
           quantity: Number(productRowData.quantity),
           sumWithVat: Number(productRowData.sumWithVat),
-          description: String(productRowData.description),
+          description: String(productRowData.description ?? ''),
         });
       }
       if (rowType === 'total') {
@@ -68,12 +77,12 @@ export const ttnVerticalMask = {
       }
     });
 
-    const parsed = parseTTNDate(sheet.A15?.v);
+    const parsed = parseTTNDate(rows[3]?.[0]);
 
     return {
       type: DocumentType.TTN,
       date: parsed?.date ?? new Date(),
-      number: parseTTNNumber(workbook),
+      number: parseTTNNumber(rows),
       supplierId: SupplierId.MOTEX,
       totalSumWithVat: totalSumWithVat,
       items: invoiceItems,

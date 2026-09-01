@@ -1,26 +1,26 @@
 import { isValid } from 'date-fns/isValid';
-import { ru } from 'date-fns/locale/ru';
-import { parse } from 'date-fns/parse';
-import { WorkBook } from 'xlsx';
-import { getRowsInJSON } from '../../../../../shared/utils/common';
+import { SSF } from 'xlsx';
 
 export const getRowType = (row: unknown[]): 'product' | 'total' | null => {
   const product = getProductRowData(row);
 
   if (
     typeof product.quantity === 'number' &&
-    product.name !== null &&
-    product.quantity !== null &&
-    product.price !== null &&
-    product.cost !== null &&
-    product.sumWithVat !== null &&
-    product.name !== 1 &&
-    product.name !== 'Итого'
+    typeof product.name === 'string' &&
+    product.name !== '' &&
+    product.sku != null &&
+    product.sku !== '' &&
+    product.units != null &&
+    product.sumWithVat != null
   ) {
     return 'product';
   }
 
-  if (product.name === 'Итого') {
+  if (
+    product.name == null &&
+    product.sku == null &&
+    typeof product.sumWithVat === 'number'
+  ) {
     return 'total';
   }
 
@@ -29,47 +29,38 @@ export const getRowType = (row: unknown[]): 'product' | 'total' | null => {
 
 export const getProductRowData = (row: unknown[]) => {
   return {
-    name: row[0],
-    units: row[58],
-    quantity: row[62],
-    price: row[67],
-    cost: row[79],
-    vatPersent: row[97],
-    vat: row[104],
-    sumWithVat: row[115],
-    description: row[144],
+    sku: row[1],
+    name: row[2],
+    manufacturer: row[3],
+    units: row[5],
+    quantity: row[6],
+    sumWithVat: row[13],
+    description: row[26],
   };
 };
 
 export const getTotalRowData = (row: unknown[]) => {
   return {
-    totalNumberOfProducts: row[62],
-    totalCost: row[79],
-    totalVat: row[104],
-    totalSumWithVat: row[115],
+    totalSumWithVat: row[13],
   };
 };
 
 export const parseTTNDate = (
   rawCell: unknown,
 ): { date: Date | null } | null => {
-  if (typeof rawCell !== 'string') return null;
+  if (typeof rawCell !== 'number') return null;
 
-  const normalizedDate = rawCell.replace(/\s*г\.?$/, '').trim();
-  const parsedDate = parse(normalizedDate, 'd MMMM yyyy', new Date(), {
-    locale: ru,
-  });
+  const parsed = SSF.parse_date_code(rawCell);
+  if (!parsed) return null;
+
+  const date = new Date(parsed.y, parsed.m - 1, parsed.d);
 
   return {
-    date: isValid(parsedDate) ? parsedDate : null,
+    date: isValid(date) ? date : null,
   };
 };
 
-export const parseTTNNumber = (workbook: WorkBook): string | null => {
-  const sheet = workbook.Sheets['стр4'];
-  if (!sheet) return null;
-
-  const rows = getRowsInJSON(sheet);
+export const parseTTNNumber = (rows: unknown[][]): string | null => {
   const number = rows[3]?.[3];
 
   if (number === null || number === undefined) return null;
