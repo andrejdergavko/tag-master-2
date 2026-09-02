@@ -11,6 +11,7 @@ import dias from './dias';
 import armtek from './armtek';
 import pilot from './pilot';
 import lAuto from './l-auto';
+import mannol from './mannol';
 
 export default [
   armtek,
@@ -26,4 +27,5 @@ export default [
   dias,
   pilot,
   wurth,
+  mannol,
 ];
