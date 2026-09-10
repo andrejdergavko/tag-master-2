@@ -1,4 +1,5 @@
 import { isValid } from 'date-fns/isValid';
+import { ru } from 'date-fns/locale/ru';
 import { parse } from 'date-fns/parse';
 
 export const getRowType = (row: unknown[]): 'product' | 'total' | null => {
@@ -18,7 +19,7 @@ export const getRowType = (row: unknown[]): 'product' | 'total' | null => {
     return 'product';
   }
 
-  if (typeof product.name === 'string' && product.name.trim().startsWith('Всего')) {
+  if (product.sku === 'ИТОГО:') {
     return 'total';
   }
 
@@ -27,34 +28,33 @@ export const getRowType = (row: unknown[]): 'product' | 'total' | null => {
 
 export const getProductRowData = (row: unknown[]) => {
   return {
-    manufacturer: row[2],
-    sku: row[3],
-    name: row[4],
-    units: row[6],
-    quantity: row[5],
-    price: row[8],
-    sumWithVat: row[9],
+    manufacturer: row[1],
+    sku: row[2],
+    name: row[3],
+    units: row[5],
+    quantity: row[4],
+    price: row[7],
+    sumWithVat: row[8],
   };
 };
 
 export const getTotalRowData = (row: unknown[]) => {
   return {
-    totalSumWithVat: Number(String(row[9]).replace('р', '')),
+    totalSumWithVat: Number(String(row[7]).replace('р', '')),
   };
 };
 
-export const parseApplicationDate = (
+export const parseTTNDate = (
   rawCell: unknown,
 ): { date: Date | null } | null => {
   if (typeof rawCell !== 'string') return null;
 
-  const dateMatch = rawCell.match(/\d{1,2}\.\d{1,2}\.\d{2,4}/);
-  if (!dateMatch) return null;
-
-  const dateFormat = dateMatch[0].length > 8 ? 'dd.MM.yyyy' : 'dd.MM.yy';
-  const date = parse(dateMatch[0], dateFormat, new Date());
+  const normalizedDate = rawCell.replace(/\s*г\.?$/, '').trim();
+  const parsedDate = parse(normalizedDate, 'd MMMM yyyy', new Date(), {
+    locale: ru,
+  });
 
   return {
-    date: isValid(date) ? date : null,
+    date: isValid(parsedDate) ? parsedDate : null,
   };
 };
