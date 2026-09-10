@@ -12,15 +12,15 @@ import {
   getProductRowData,
   getRowType,
   getTotalRowData,
-  parseApplicationDate,
+  parseTTNDate,
 } from './utils';
 import { getRowsInJSON } from '../../../../../shared/utils/common';
 
 set_cptable(cptable);
 
-export const applicationMask = {
+export const applicationKingMask = {
   type: DocumentType.OTHER,
-  description: 'Приложение',
+  description: 'Приложение кинг',
   isMatch: (attachment: MessageStructureObject) => {
     if (attachment.type !== MIME_TYPE_EXCEL_OLD) {
       return false;
@@ -32,11 +32,7 @@ export const applicationMask = {
       return false;
     }
 
-    if (name.includes('БИГ')) {
-      return false;
-    }
-
-    if (name.toLowerCase().includes('кинг')) {
+    if (!name.toLowerCase().includes('кинг')) {
       return false;
     }
 
@@ -72,7 +68,7 @@ export const applicationMask = {
       }
     });
 
-    const parsed = parseApplicationDate(sheet.H4?.v);
+    const parsed = parseTTNDate(sheet.H4?.v);
 
     return {
       type: DocumentType.OTHER,

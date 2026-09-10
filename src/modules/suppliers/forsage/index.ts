@@ -2,6 +2,7 @@ import { SupplierDTO, SupplierId } from '../../../shared/types';
 import logo from '../../../assets/forsage-logo.png';
 import { applicationMask } from './masks/application/applicationMask';
 import { applicationBigMask } from './masks/applicationBig/applicationBigMask';
+import { applicationKingMask } from './masks/applicationKing/applicationKingMask';
 
 const forsage: SupplierDTO = {
   id: SupplierId.FORSAGE,
@@ -17,7 +18,7 @@ const forsage: SupplierDTO = {
       marginRight: 1,
     },
   },
-  masks: [applicationBigMask, applicationMask],
+  masks: [applicationBigMask, applicationKingMask, applicationMask],
 };
 
 export default forsage;
