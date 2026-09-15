@@ -19,12 +19,15 @@ const get43x25TagLayout = ({
   sku,
 }: TagDataMap[TagType.FOUR_THREE_X_TWO_FIVE]) => {
   const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const year = String(now.getFullYear() % 100).padStart(2, '0');
-  // Формат: X{MM}{YY}A{цена}, например X0826A33.2
-  const formattedPrice = Number(price.toFixed(1));
-  const specialCode = `X${month}${year}0${formattedPrice}`;
-  const title = sku ? `${sku} ${name}` : name;
+  const month = now.getMonth() + 1;
+  const year = now.getFullYear() % 10;
+  // Формат: {цена}X{месяц}-{год}{случайное двузначное число}, например 12-2X9-647
+  const formattedPrice = price.toFixed(1).replace('.', '-');
+  const randomSuffix = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+  const specialCode = `${formattedPrice}X${month}-${year}${randomSuffix}`;
+  const title = sku
+    ? `${sku} ${name}, ${specialCode}`
+    : `${name}, ${specialCode}`;
 
   return [
     // ^XA — начало этикетки (Start Format)
@@ -39,7 +42,7 @@ const get43x25TagLayout = ({
     // ^LL — высота этикетки в dots (Label Length)
     `^LL${LABEL_HEIGHT}`,
 
-    // Название товара (артикул перед названием, если есть):
+    // Название товара (артикул перед названием, спецкод в конце):
     // ^FO x,y — позиция поля (Field Origin), x вправо, y вниз
     // ^A@N,h,w,font — Unicode TrueType шрифт:
     //   N — ориентация (Normal), h/w — высота/ширина символа, TT0003M_ — шрифт с кириллицей
@@ -53,11 +56,8 @@ const get43x25TagLayout = ({
     //   thickness = height → заливка, W — белый, B — чёрный
     `^FO10,130^GB${LABEL_WIDTH},300,100,W^FS`,
 
-    // Строка над штрихкодом: 30% код поставщика + 70% спецкод
-    // Левая часть (30%) — код поставщика, например APTR
+    // Строка над штрихкодом — код поставщика, например APTR
     `^FO20,${SPECIAL_CODE_Y}^A@N,28,28,TT0003M_^FB${SUPPLIER_CODE_WIDTH},1,0,L,0^FD${supplierCode}^FS`,
-    // Правая часть (70%) — спецкод: X + месяц (MM) + год (YY) + A + цена, например X0826A33.2
-    `^FO${SUPPLIER_CODE_WIDTH},${SPECIAL_CODE_Y}^A@N,28,28,TT0003M_^FB${LABEL_WIDTH - SUPPLIER_CODE_WIDTH},1,0,L,0^FD${specialCode}^FS`,
 
     // Штрихкод Code 128 (левые ~70% ширины этикетки):
     // ^FO x,y — позиция штрихкода (слева)
