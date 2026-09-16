@@ -1,7 +1,6 @@
 import amazis from './amazis';
 import autopiter from './autopiter';
 import arklow from './arklow';
-import wurth from './wurth';
 import forsage from './forsage';
 import almik from './almik';
 import motex from './motex';
@@ -25,5 +24,4 @@ export default [
   amazis,
   dias,
   pilot,
-  wurth,
 ];
