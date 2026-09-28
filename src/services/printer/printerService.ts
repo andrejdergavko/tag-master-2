@@ -6,6 +6,10 @@ import { DEFAULT_PRINTER_NAME, TagType } from './constants';
 import get4x25TagLayout from './tagLayouts/4x2.5tag';
 import get43x25TagLayout from './tagLayouts/4.3x2.5tag';
 import get58x3TagLayout from './tagLayouts/5.8x3tag';
+import {
+  getCustomTagZpl,
+  normalizeCustomTagText,
+} from './tagLayouts/customTag';
 import { TagData } from './types';
 
 export const getPrinterList = async () => {
@@ -40,6 +44,42 @@ export const printTags = async (
     )
     .join('');
 
+  const encoded = new TextEncoder().encode(tagLayouts);
+
+  await print(
+    {
+      type: 'winspool',
+      printerName: resolvedPrinterName,
+      documentName: 'ZPL Label',
+    },
+    encoded,
+  );
+};
+
+const MAX_CUSTOM_COPIES = 99;
+
+export const printCustomTags = async (
+  text: string,
+  copies: number,
+  fontSize?: number,
+  printerName?: string,
+) => {
+  const printable = normalizeCustomTagText(text);
+  if (!printable) {
+    throw new Error('Пустой текст');
+  }
+
+  const tagType = getTagType();
+  const resolvedPrinterName =
+    printerName ?? getDefaultPrinter() ?? DEFAULT_PRINTER_NAME;
+  const count = Math.min(
+    MAX_CUSTOM_COPIES,
+    Math.max(1, Math.floor(Number(copies)) || 1),
+  );
+  const tagLayouts = Array.from(
+    { length: count },
+    () => getCustomTagZpl(tagType, printable, fontSize),
+  ).join('');
   const encoded = new TextEncoder().encode(tagLayouts);
 
   await print(

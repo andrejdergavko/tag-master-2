@@ -11,6 +11,7 @@ import DocumentsPage from './pages/DocumentsPage';
 import DocumentPage from './pages/DocumentPage';
 import PrintTagsPage from './pages/PrintTagsPage/PrintTagsPage';
 import ProductsPage from './pages/ProductsPage/ProductsPage';
+import CustomPrintPage from './pages/CustomPrintPage';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import AppLayout from './shared/components/Layout/AppLayout';
 import DocumentsLayout from './shared/components/Layout/DocumentsLayout';
@@ -56,6 +57,10 @@ const App = () => {
                 <Route
                   path={RoutesEnum.products}
                   element={<ProductsPage />}
+                />
+                <Route
+                  path={RoutesEnum.customPrint}
+                  element={<CustomPrintPage />}
                 />
                 <Route
                   path={RoutesEnum.settings}

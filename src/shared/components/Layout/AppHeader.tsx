@@ -16,6 +16,7 @@ const { Header } = Layout;
 const navItems = [
   { to: Routes.documents, label: pageNames[Pages.documents], end: false },
   { to: Routes.products, label: pageNames[Pages.products], end: true },
+  { to: Routes.customPrint, label: pageNames[Pages.customPrint], end: true },
 ] as const;
 
 export default function AppHeader() {

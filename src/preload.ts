@@ -56,6 +56,18 @@ const electronHandler = {
     ): Promise<void> {
       return ipcRenderer.invoke('printer:print-tags', data, printerName);
     },
+    printCustomTags(
+      text: string,
+      copies: number,
+      fontSize?: number,
+    ): Promise<void> {
+      return ipcRenderer.invoke(
+        'printer:print-custom-tags',
+        text,
+        copies,
+        fontSize,
+      );
+    },
   },
   config: {
     getDefaultPrinter(): Promise<string | null> {

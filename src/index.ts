@@ -25,7 +25,11 @@ import {
   setYandexApiKey,
 } from './services/config/configService';
 import { resetPrismaClient } from './services/db/prisma';
-import { getPrinterList, printTags } from './services/printer/printerService';
+import {
+  getPrinterList,
+  printCustomTags,
+  printTags,
+} from './services/printer/printerService';
 import {
   checkForUpdates,
   getAppVersion,
@@ -112,6 +116,12 @@ ipcMain.handle(
     ];
 
     await markDocumentItemsPrinted(itemIds);
+  },
+);
+ipcMain.handle(
+  'printer:print-custom-tags',
+  async (_: unknown, text: string, copies: number, fontSize?: number) => {
+    await printCustomTags(text, copies, fontSize);
   },
 );
 ipcMain.handle('config:get-default-printer', () => {
