@@ -10,6 +10,7 @@ import dias from './dias';
 import armtek from './armtek';
 import pilot from './pilot';
 import lAuto from './l-auto';
+import auto1 from './auto1';
 
 export default [
   armtek,
@@ -21,6 +22,7 @@ export default [
   almik,
   monlibon,
   lAuto,
+  auto1,
   amazis,
   dias,
   pilot,
