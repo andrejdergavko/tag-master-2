@@ -1,5 +1,6 @@
 import { TagDataMap } from '../types';
 import { TagType } from '../constants';
+import { buildDocumentTagTitle } from '../tagTitle';
 
 const LABEL_WIDTH = 320;
 const LABEL_HEIGHT = 180;
@@ -18,16 +19,7 @@ const get4x25TagLayout = ({
   number,
   sku,
 }: TagDataMap[TagType.FOUR_X_TWO_FIVE]) => {
-  const now = new Date();
-  const month = now.getMonth() + 1;
-  const year = now.getFullYear() % 10;
-  // Формат: {цена}X{месяц}-{год}{случайное двузначное число}, например 12-2X9-647
-  const formattedPrice = price.toFixed(1).replace('.', '-');
-  const randomSuffix = String(Math.floor(Math.random() * 100)).padStart(2, '0');
-  const specialCode = `${formattedPrice}X${month}-${year}${randomSuffix}`;
-  const title = sku
-    ? `${sku} ${name}, ${specialCode}`
-    : `${name}, ${specialCode}`;
+  const title = buildDocumentTagTitle(name, price, sku);
 
   return [
     // ^XA — начало этикетки (Start Format)

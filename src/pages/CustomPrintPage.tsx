@@ -1,5 +1,13 @@
-import { useState } from 'react';
-import { Button, Input, InputNumber, Select, Typography, message } from 'antd';
+import { useMemo, useState } from 'react';
+import {
+  Button,
+  Input,
+  InputNumber,
+  Segmented,
+  Select,
+  Typography,
+  message,
+} from 'antd';
 import {
   DEFAULT_TAG_TYPE,
   TAG_TYPE_LABELS,
@@ -9,6 +17,8 @@ import {
   getCustomTagLayout,
   normalizeCustomTagText,
 } from '../services/printer/tagLayouts/customTag';
+import { buildDocumentTagTitle } from '../services/printer/tagTitle';
+import { sanitizeProductName } from '../services/printer/sanitizeProductName';
 import { useGetTagType } from '../modules/printer/hooks/useGetTagType';
 import { usePrintCustomTags } from '../modules/printer/hooks/usePrintCustomTags';
 
@@ -17,6 +27,10 @@ const { TextArea } = Input;
 const RECENT_STORAGE_KEY = 'custom-print-recent';
 const RECENT_LIMIT = 8;
 const PREVIEW_WIDTH = 360;
+const FORM_WIDTH = 360;
+const DOCUMENT_TITLE_FONT = 22;
+
+type PrintMode = 'text' | 'price';
 
 const readRecent = (): string[] => {
   try {
@@ -52,34 +66,64 @@ const recentLabel = (text: string): string => {
 export default function CustomPrintPage() {
   const { data: tagType = DEFAULT_TAG_TYPE } = useGetTagType();
   const { mutateAsync: printCustomTags, isPending } = usePrintCustomTags();
+  const [mode, setMode] = useState<PrintMode>('text');
   const [text, setText] = useState('');
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState<number | null>(null);
   const [copies, setCopies] = useState<number | null>(1);
   const [fontSize, setFontSize] = useState<number | null>(null);
   const [recent, setRecent] = useState<string[]>(readRecent);
 
   const printable = normalizeCustomTagText(text);
+  const cleanName = sanitizeProductName(normalizeCustomTagText(name));
+  const priceSuffix = useMemo(
+    () => String(Math.floor(Math.random() * 100)).padStart(2, '0'),
+    [price],
+  );
+  const priceTitle =
+    cleanName && price != null
+      ? buildDocumentTagTitle(cleanName, price, undefined, {
+          randomSuffix: priceSuffix,
+        })
+      : '';
+  const activeText = mode === 'text' ? printable : priceTitle;
   const fontOptions = getCustomTagFontOptions(tagType);
   const manualFontSize = fontOptions.some((option) => option.size === fontSize)
     ? fontSize
     : null;
+  const layoutFont =
+    mode === 'price' ? (manualFontSize ?? DOCUMENT_TITLE_FONT) : manualFontSize;
   const layout = getCustomTagLayout(
     tagType,
-    printable,
-    manualFontSize ?? undefined,
+    activeText,
+    layoutFont ?? undefined,
   );
   const scale = PREVIEW_WIDTH / layout.width;
-  const canPrint = Boolean(printable) && copies != null && copies >= 1;
+  const canPrint = Boolean(activeText) && copies != null && copies >= 1;
+  const canClear = mode === 'text' ? Boolean(text) : Boolean(name) || price != null;
+
+  const handleClear = () => {
+    if (mode === 'text') {
+      setText('');
+      return;
+    }
+
+    setName('');
+    setPrice(null);
+  };
 
   const handlePrint = async () => {
     if (!canPrint || copies == null) return;
 
     try {
       await printCustomTags({
-        text: printable,
+        text: activeText,
         copies,
-        fontSize: manualFontSize ?? undefined,
+        fontSize: layoutFont ?? undefined,
       });
-      setRecent((current) => rememberRecent(printable, current));
+      if (mode === 'text') {
+        setRecent((current) => rememberRecent(printable, current));
+      }
     } catch {
       message.error('Не удалось напечатать этикетку');
     }
@@ -91,14 +135,13 @@ export default function CustomPrintPage() {
         display: 'flex',
         flexDirection: 'column',
         gap: 16,
-        height: '100%',
-        minHeight: 0,
+        alignItems: 'flex-start',
       }}
     >
       <Typography.Text type="secondary">
         Этикетка {TAG_TYPE_LABELS[tagType]}
       </Typography.Text>
-      <div style={{ display: 'flex', gap: 24, minHeight: 0, flex: 1 }}>
+      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
         <div
           style={{
             width: PREVIEW_WIDTH,
@@ -115,26 +158,54 @@ export default function CustomPrintPage() {
             wordBreak: 'break-word',
           }}
         >
-          {printable}
+          {activeText}
         </div>
         <div
           style={{
-            flex: 1,
-            minWidth: 0,
+            width: FORM_WIDTH,
             display: 'flex',
             flexDirection: 'column',
             gap: 12,
           }}
         >
-          <TextArea
-            value={text}
-            placeholder="Текст этикетки"
-            autoFocus
-            rows={3}
-            style={{ resize: 'none', flex: 'none' }}
-            onChange={(event) => setText(event.target.value)}
+          <Segmented
+            value={mode}
+            options={[
+              { label: 'Текст', value: 'text' },
+              { label: 'Наименование и цена', value: 'price' },
+            ]}
+            onChange={(value) => setMode(value as PrintMode)}
           />
-          {printable && !layout.fits && (
+          {mode === 'text' ? (
+            <TextArea
+              value={text}
+              placeholder="Текст этикетки"
+              autoFocus
+              rows={3}
+              style={{ resize: 'none', flex: 'none' }}
+              onChange={(event) => setText(event.target.value)}
+            />
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Input
+                value={name}
+                placeholder="Наименование"
+                autoFocus
+                onChange={(event) => setName(event.target.value)}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span>Цена</span>
+                <InputNumber
+                  min={0}
+                  step={0.1}
+                  value={price}
+                  style={{ width: 140 }}
+                  onChange={(value) => setPrice(value)}
+                />
+              </div>
+            </div>
+          )}
+          {activeText && !layout.fits && (
             <Typography.Text type="warning">
               Текст может не поместиться на этикетке
             </Typography.Text>
@@ -175,7 +246,7 @@ export default function CustomPrintPage() {
               />
             </div>
           </div>
-          {recent.length > 0 && (
+          {mode === 'text' && recent.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {recent.map((item) => (
                 <Button
@@ -188,20 +259,20 @@ export default function CustomPrintPage() {
               ))}
             </div>
           )}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+            <Button disabled={!canClear} onClick={handleClear}>
+              Очистить
+            </Button>
+            <Button
+              type="primary"
+              disabled={!canPrint}
+              loading={isPending}
+              onClick={() => void handlePrint()}
+            >
+              Распечатать
+            </Button>
+          </div>
         </div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-        <Button disabled={!text} onClick={() => setText('')}>
-          Очистить
-        </Button>
-        <Button
-          type="primary"
-          disabled={!canPrint}
-          loading={isPending}
-          onClick={() => void handlePrint()}
-        >
-          Распечатать
-        </Button>
       </div>
     </div>
   );
