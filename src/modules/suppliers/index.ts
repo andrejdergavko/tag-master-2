@@ -11,6 +11,7 @@ import armtek from './armtek';
 import pilot from './pilot';
 import lAuto from './l-auto';
 import auto1 from './auto1';
+import wuerth from './wuerth';
 
 export default [
   armtek,
@@ -26,4 +27,5 @@ export default [
   amazis,
   dias,
   pilot,
+  wuerth,
 ];
