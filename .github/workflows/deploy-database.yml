@@ -1,0 +1,78 @@
+name: Deploy database
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - deploy/database/docker-compose.yml
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy database
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v4
+
+      - name: Prepare compose file
+        run: |
+          mkdir -p upload
+          cp deploy/database/docker-compose.yml upload/docker-compose.yml
+
+      - name: Copy compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: upload/docker-compose.yml
+          target: tag-master/database
+          strip_components: 1
+          overwrite: true
+
+      - name: Start database
+        uses: appleboy/ssh-action@v1
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: POSTGRES_USER,POSTGRES_PASSWORD
+          command_timeout: 10m
+          script: |
+            set -euo pipefail
+            mkdir -p "$HOME/tag-master/database"
+            cd "$HOME/tag-master/database"
+
+            if [ -z "${POSTGRES_USER}" ] || [ -z "${POSTGRES_PASSWORD}" ]; then
+              echo "POSTGRES_USER or POSTGRES_PASSWORD secret is empty"
+              exit 1
+            fi
+
+            umask 077
+            printf 'POSTGRES_USER="%s"\nPOSTGRES_PASSWORD="%s"\n' "$POSTGRES_USER" "$POSTGRES_PASSWORD" > .env
+            chmod 600 .env
+
+            if docker compose version >/dev/null 2>&1; then
+              COMPOSE="docker compose"
+            else
+              COMPOSE="docker-compose"
+            fi
+
+            if docker inspect postgres >/dev/null 2>&1; then
+              project=$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project"}}' postgres)
+              if [ -z "$project" ] || [ "$project" = "<no value>" ]; then
+                docker rm -f postgres
+              fi
+            fi
+
+            $COMPOSE -p tag-master-database pull
+            $COMPOSE -p tag-master-database up -d
+            docker ps --filter name=postgres
