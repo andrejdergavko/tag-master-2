@@ -12,6 +12,7 @@ import pilot from './pilot';
 import lAuto from './l-auto';
 import auto1 from './auto1';
 import wuerth from './wuerth';
+import forwardMotors from './forward-motors';
 
 export default [
   armtek,
@@ -24,6 +25,7 @@ export default [
   monlibon,
   lAuto,
   auto1,
+  forwardMotors,
   amazis,
   dias,
   pilot,
