@@ -13,6 +13,7 @@ import lAuto from './l-auto';
 import auto1 from './auto1';
 import wuerth from './wuerth';
 import forwardMotors from './forward-motors';
+import manol from './manol';
 
 export default [
   armtek,
@@ -30,4 +31,5 @@ export default [
   dias,
   pilot,
   wuerth,
+  manol,
 ];
