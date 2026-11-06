@@ -14,6 +14,7 @@ import auto1 from './auto1';
 import wuerth from './wuerth';
 import forwardMotors from './forward-motors';
 import manol from './manol';
+import stab from './stab';
 
 export default [
   armtek,
@@ -32,4 +33,5 @@ export default [
   pilot,
   wuerth,
   manol,
+  stab,
 ];

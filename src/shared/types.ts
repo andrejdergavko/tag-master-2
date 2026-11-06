@@ -87,6 +87,7 @@ export enum SupplierId {
   WUERTH = 'wuerth',
   FORWARD_MOTORS = 'forward-motors',
   MANOL = 'manol',
+  STAB = 'stab',
 }
 
 export type IMask = {
