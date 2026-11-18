@@ -16,7 +16,7 @@ services:
 
   databasus:
     container_name: tag-master-databasus
-    image: databasus/databasus:latest
+    image: databasus/databasus:v3.61.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:4005:4005"
